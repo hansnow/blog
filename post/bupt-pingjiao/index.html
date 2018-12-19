@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <title>北邮教务系统评教脚本 &middot; Han&#39;s Blog</title>
+    <meta name="author" content="Hansnow">
+    <meta name="description" content="小寒写字的地方">
+    <meta name="generator" content="Hugo 0.52" />
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+    <!-- RSS autodiscovery -->
+    
+
+    <link rel="shortcut icon" href="https://hansnow.me/img/favicon.ico">
+    <link rel="stylesheet" href="//cdn.bootcss.com/normalize/5.0.0/normalize.min.css">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="https://hansnow.me/css/screen.css">
+    <link rel="stylesheet" href="https://hansnow.me/css/github.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.8.0/styles/default.min.css">
+    
+
+    
+    <link rel="shortcut icon" type="image/x-icon" href="https://hansnow.me/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="https://hansnow.me/favicon.ico">
+    
+
+    <!-- Stylesheet for theme color -->
+    <style type="text/css">
+    a, a:visited {color: #33cc99;}
+    .pagination a {color: #33cc99;}
+    .gist .gist-file .gist-meta a:visited {color: #33cc99 !important;}
+    a:focus, a:hover {color: #178b6b;}
+    h1.post-title a:focus, h1.post-title a:hover, h1.blog-title a:focus, h1.blog-title a:hover {color: #178b6b;}
+    .older-posts:hover, .newer-posts:hover {color: #178b6b;}
+</style>
+</head>
+
+<body class="home-template">
+    <header id="site-head">
+	
+	<h1 class="blog-title"><a href="https://hansnow.me/">Han&rsquo;s Blog</a></h1>
+	
+	
+</header>
+    
+    
+    <main class="content" role="main">
+    
+<article class="post">
+    <header>
+        <h1 class="post-title">北邮教务系统评教脚本</h1>
+        <div class="post-meta">
+            <time datetime="09 January 2015">
+                09 January 2015
+            </time>
+        </div>
+    </header>
+
+    <section class="post-content">
+        
+
+<p><strong>2015年01月09日更新</strong></p>
+
+<p><strong>由于教务系统的地址变更以及验证码的加入，Python版的评教脚本已经失效，请使用javascript版</strong></p>
+
+<p>每个学期末都烦心事儿不断，评教这件小事儿还非得过来掺合掺合。扒着眼睛找那个巨小无比的选择按钮真实让人烦躁啊。作为死工科生，总得做点什么。于是就写了个评教脚本。</p>
+
+<p>总共有两个版本（考虑到坑爹的windows，实际上是三个）
++ JavaScript版
++ Python版
++ Py4win版（src+exe）</p>
+
+<p>这三个版本有点儿不一样。Javascript版就是一串JS代码，直接在浏览器中运行即可，不需要额外下载安装任何东西，但是缺点是每次只能评一位老师，也就是说你还是得运行十几次代码才能完成教学评估。Python版是一个.py文件，在大多数Linux/OSX上都能直接运行，而且能一次性完成评教，是真正的“一键评教”。单独把Windows割裂出来是因为编码问题，cmd的默认编码是gb2312，于是就出现了乱码，于是把Python版的代码做一些编码上的处理就变成了Py4win版，考虑到大部分windows下没安装Python，于是用py2exe打包了一个exe，算作是Py4win版的一部分吧。</p>
+
+<!-- more -->
+
+<p>下面开始挨个介绍使用方法。</p>
+
+<h2 id="javascript版-一般般推荐">JavaScript版（一般般推荐）</h2>
+
+<p>复制下面这串代码(有结构的未压缩版请看文章最后)</p>
+
+<pre><code class="language-javascript">javascript:if(window.document.title==&quot;URP 综合教务系统 - 教学评估 - 教学评估&quot;){x=window.frames[1].frames[2].document.getElementsByTagName(&quot;input&quot;)}else if(window.document.title==&quot;问卷评估页面&quot;){x=window.document.getElementsByTagName(&quot;input&quot;)}else{alert(&quot;请确认一个你现在是不是处于正确的页面上，本程序只能在教学评估页面运行！&quot;)}data=new Array();for(var i=0;i&lt;x.length;i++){if(x[i].type==&quot;hidden&quot;){data.push(x[i].value)}};function post(path,params,method){method=method||&quot;post&quot;;var form=document.createElement(&quot;form&quot;);form.setAttribute(&quot;method&quot;,method);form.setAttribute(&quot;action&quot;,path);for(var key in params){if(params.hasOwnProperty(key)){var hiddenField=document.createElement(&quot;input&quot;);hiddenField.setAttribute(&quot;type&quot;,&quot;hidden&quot;);hiddenField.setAttribute(&quot;name&quot;,key);hiddenField.setAttribute(&quot;value&quot;,params[key]);form.appendChild(hiddenField)}}document.body.appendChild(form);form.submit()}post('http://jwxt.bupt.edu.cn/jxpgXsAction.do?oper=wjpg',{'wjbm':data[0],'bpr':data[1],'pgnr':data[2],'0000000021':'10_0.95','0000000022':'10_0.95','0000000023':'5_0.95','0000000024':'20_0.95','0000000025':'10_0.95','0000000026':'5_0.95','0000000027':'5_0.95','0000000028':'20_0.95','0000000029':'10_0.95','0000000030':'5_0.95','zgpj':'老师讲课很认真的啦~'},&quot;post&quot;);
+</code></pre>
+
+<p>登录教务系统，打开教学评估页面，选择一门课程进行评估，于是就到了下面这个页面（由于测试的关系我已经评完了）
+<img src="http://pic.yupoo.com/hansnow/DMS44EHo/140HRd.png" alt="" /></p>
+
+<p>然后，在浏览器的<strong>地址栏</strong>中粘贴刚刚复制的代码，注意，一定要带前面的<code>javascript:</code>，有些浏览器由于安全方面的考虑会自动过滤掉这串字符，这时就需要我们手动加上。粘贴好之后按回车，脚本会自动完成选择和提交的动作。默认都选“优”也就是第二档。</p>
+
+<p>还有两种使用方式可以参考：
++ 把这段代码加到书签里，到评估页面后直接点书签就行了
++ 在浏览器开发者工具的Console中执行</p>
+
+<h2 id="python版-最推荐">Python版（最推荐）</h2>
+
+<p>如果你用的是Linux/OSX，那么在安装完<code>BeautifulSoup</code>后就可以直接调用了。</p>
+
+<p>BeautifulSoup安装命令：<code>sudo pip install beautifulsoup4</code>或<code>sudo easy_install beautifulsoup4</code></p>
+
+<p>运行脚本：<code>python pingjiao.py</code></p>
+
+<p>运行效果大概就是下面这样
+<img src="http://pic.yupoo.com/hansnow/DMTG3Qbt/CoUkb.png" alt="脚本运行效果" /></p>
+
+<h2 id="py4win版-src推荐-exe非常不推荐">Py4win版（src推荐，exe非常不推荐）</h2>
+
+<p>如果你在windows上装了python，那么使用方法和Python版完全相同，装好BeautifulSoup就能用了。</p>
+
+<p>如果没装，但是你还非常想用的话，那只能用exe版本了。exe版本使用非常简单，双击“评教.exe”运行就行了。</p>
+
+<p>exe版本使用Py4win版的src+py2exe打包，使用上没有任何问题，但是我不推荐用。直接给可执行文件是个很敏感的事儿，你完全可以说我植入了什么奇怪的东西，虽然我什么都没干。所以如果你使用exe版的话，你必须<strong>自己承担这带来的一切后果</strong>。有点危言耸听了，但是永远要相信「6L+Z5Liq5LiW55WM5LiK5bCP5Lq66L+Y5piv5oy65aSa55qE」。</p>
+
+<h2 id="所有的文件来这儿下载">所有的文件来这儿下载</h2>
+
+<p>所有源码都放在github上：<a href="https://github.com/hansnow/bupt-pingjiao">https://github.com/hansnow/bupt-pingjiao</a>
+Py4win版的exe文件到这个地址下载：<a href="http://pan.baidu.com/s/1c09v6Ru">http://pan.baidu.com/s/1c09v6Ru</a>
+BeautifulSoup网站：<a href="http://www.crummy.com/software/BeautifulSoup">http://www.crummy.com/software/BeautifulSoup</a></p>
+
+<p>感谢 @qiukun 大神的指导。良师益友没得说~</p>
+
+    </section>
+
+    
+    <section class="post-tags" style="padding-bottom:60px;">
+        <div class="post-meta tags">
+            <i class="fa fa-fw fa-tag"></i>
+            
+        </div>
+    </section>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "hansnow-blog" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <section class="share">
+    <p class="backtotop"><a data-scroll href="#site-head"><i class="fa fa-lg fa-fw fa-angle-double-up"></i></a><a data-scroll class="backtotoptext" href="#site-head"> Back to top</a></p>
+    <p class="info prompt">Share</p>
+    <a href="http://twitter.com/share?text=%e5%8c%97%e9%82%ae%e6%95%99%e5%8a%a1%e7%b3%bb%e7%bb%9f%e8%af%84%e6%95%99%e8%84%9a%e6%9c%ac&url=https%3a%2f%2fhansnow.me%2fpost%2fbupt-pingjiao%2f" title="Share on Twitter"
+        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <i class="fa fa-2x fa-fw fa-twitter-square"></i> <span class="hidden">Twitter</span>
+    </a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhansnow.me%2fpost%2fbupt-pingjiao%2f" title="Share on Facebook"
+        onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <i class="fa fa-2x fa-fw fa-facebook-square" style="margin-left: -8px"></i> <span class="hidden">Facebook</span>
+    </a>
+    <a href="https://plus.google.com/share?url=https%3a%2f%2fhansnow.me%2fpost%2fbupt-pingjiao%2f" title="Share on Google+"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <i class="fa fa-2x fa-fw fa-google-plus-square" style="margin-left: -8px"></i> <span class="hidden">Google+</span>
+    </a>
+</section>
+
+    <footer class="post-footer">
+        <section class="author">
+    <div class="authorimage" style="background: url(https://hansnow.me/img/avatar.jpg)"></div>
+    <h4>Hansnow</h4>
+    <p class="bio">胖子/伪极客/伪码农/曾经爱跑步/业余吃货</p>
+    <p class="meta">
+      <i class="fa fa-fw fa-map-marker"></i> Beijing
+    </p>
+</section>
+    </footer>
+    
+</article>
+
+    </main>
+
+    <footer class="site-footer">
+	<div class="inner">
+		<section class="footer-social">
+      
+      <a href="//twitter.com/hansnow2012" target="_blank" title="Twitter"><i class="fa fa-2x fa-fw fa-twitter"></i> <span class="hidden">Twitter</span></a>&nbsp;
+      
+      
+      
+      
+      
+      
+      <a href="//github.com/hansnow" target="_blank" title="GitHub"><i class="fa fa-2x fa-fw fa-github"></i> <span class="hidden">GitHub</span></a>&nbsp;
+      
+      
+      
+      
+  </section>
+
+		<section class="copyright">&copy; 2018 <a href="https://hansnow.me/">Hansnow</a>. </section>
+	</div>
+</footer>
+
+    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://hansnow.me/js/index.js"></script>
+<script src="https://hansnow.me/js/smooth-scroll.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.8.0/highlight.min.js"></script>
+
+
+<script>
+    smoothScroll.init({
+        speed: 800,
+        easing: 'easeInOutCubic',
+        updateURL: false,
+        offset: 125,
+    });
+</script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-28999513-4', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+</body>
+</html>

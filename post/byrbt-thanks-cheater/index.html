@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <title>北邮人BT“说谢谢”刷分 &middot; Han&#39;s Blog</title>
+    <meta name="author" content="Hansnow">
+    <meta name="description" content="小寒写字的地方">
+    <meta name="generator" content="Hugo 0.52" />
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+    <!-- RSS autodiscovery -->
+    
+
+    <link rel="shortcut icon" href="https://hansnow.me/img/favicon.ico">
+    <link rel="stylesheet" href="//cdn.bootcss.com/normalize/5.0.0/normalize.min.css">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="https://hansnow.me/css/screen.css">
+    <link rel="stylesheet" href="https://hansnow.me/css/github.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.8.0/styles/default.min.css">
+    
+
+    
+    <link rel="shortcut icon" type="image/x-icon" href="https://hansnow.me/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="https://hansnow.me/favicon.ico">
+    
+
+    <!-- Stylesheet for theme color -->
+    <style type="text/css">
+    a, a:visited {color: #33cc99;}
+    .pagination a {color: #33cc99;}
+    .gist .gist-file .gist-meta a:visited {color: #33cc99 !important;}
+    a:focus, a:hover {color: #178b6b;}
+    h1.post-title a:focus, h1.post-title a:hover, h1.blog-title a:focus, h1.blog-title a:hover {color: #178b6b;}
+    .older-posts:hover, .newer-posts:hover {color: #178b6b;}
+</style>
+</head>
+
+<body class="home-template">
+    <header id="site-head">
+	
+	<h1 class="blog-title"><a href="https://hansnow.me/">Han&rsquo;s Blog</a></h1>
+	
+	
+</header>
+    
+    
+    <main class="content" role="main">
+    
+<article class="post">
+    <header>
+        <h1 class="post-title">北邮人BT“说谢谢”刷分</h1>
+        <div class="post-meta">
+            <time datetime="15 October 2014">
+                15 October 2014
+            </time>
+        </div>
+    </header>
+
+    <section class="post-content">
+        
+
+<h1 id="前言">前言</h1>
+
+<p>今天上午刚刚搬家到新的博客，这个博客使用Markdown语法写作，靠DropBox同步文章，感觉还是有点儿意思呢。之前的Octopress博客<a href="http://coding.yunbo.li">http://coding.yunbo.li</a>访问速度实在是太差，而且到现在为止我还是没学会怎么在上面发布文章，这时Farbox出现了，索性转了过来。btw，以前的负能量小站已经迁移到了<a href="http://laodao.yunbo.li">http://laodao.yunbo.li</a></p>
+
+<p>目前这个系统的大体流程已经搞明白了，但是和其他博客系统一样，主题修改还是让我头疼。</p>
+
+<p>不过也管不了那么多啦，等把一切都搞明白了再开始写不知道要等到什么时候了，索性就这样写吧，反正文章丢不了。</p>
+
+<p>今天给大家带来的是一个Python写的小玩具，在北邮人BT上说谢谢刷魔力值。</p>
+
+<!-- more -->
+
+<p>在北邮人BT上有这么一条规则：
+<img src="http://pic.yupoo.com/hansnow/DMRSHelw/15mpHb.png" alt="BT上通过说谢谢得到魔力值的规则" /></p>
+
+<p>而且除了对每个种子只能说一次之外，系统对说谢谢这个功能没有其他限制。BYRBT上大概有4W个种子，也就是说我们可以通过说谢谢得到4W魔力值。我们要做的就是靠Python来实现说谢谢的功能从而获得魔力值。</p>
+
+<p>好，了解完思路，让我们进入实战环节。</p>
+
+<h1 id="说谢谢背后的原理">说谢谢背后的原理</h1>
+
+<p>当我们对一个种子“说谢谢”的时候，浏览器干了什么？</p>
+
+<p>首先，我们打开浏览器（以Chrome为例了，据说FireFox的FireBug也很好用），进入BT随便打开一个种子，比如我们打开这个<a href="http://bt.byr.cn/details.php?id=152137&amp;hit=1">http://bt.byr.cn/details.php?id=152137&amp;hit=1</a>，页面拉到种子信息那里，我们可以看到说谢谢按钮。
+<img src="http://pic.yupoo.com/hansnow/DMRSsAqL/RbgW5.png" alt="说谢谢按钮" />
+这时，请出我们今天的第一个大杀器——Chrome开发者工具[^1]。</p>
+
+<p>Chrome开发者工具是随Chrome浏览器一起发布的面向开发人员的网页调适工具，通过它，我们可以看到网页背后的技术细节。在Windows下，我们可以用<code>F12</code>打开开发者工具，在OSX下，快捷键为<code>Command+Option+I</code>。</p>
+
+<p>打开开发者工具后，我们会开到这样一个窗口。最上方是功能选项卡，不同的选项卡下对应着不同的功能，我们用的比较多的是<code>Elements</code>和<code>Network</code>选项卡。在<code>Elements</code>选项卡中，我们可以方便地以标准的树状结构浏览HTML元素，通常这对了解网页布局和网页元素的细节是很有帮助的。
+<img src="http://pic.yupoo.com/hansnow/DMRTTvbg/jG4ox.png" alt="Chrome开发者工具" /></p>
+
+<p><code>Network</code>选项卡主要用来显示网页背后的数据交互，也就是用来查看HTTP请求。这里有两个按钮需要注意，首先是左上角的那个红点，它的左右和录音机的录制键差不多，红色表示记录状态，灰色表示非记录状态。它旁边的那个灰色叉子按钮是Clear键，用来删除已有的记录。在这一行的最右侧是<code>Preserve log</code>选项，如果它处于选中状态，那么即使网页刷新或者跳转，已有的记录依然会被保留。（默认情况下一旦页面刷新，已有记录会被清除）
+<img src="http://pic.yupoo.com/hansnow/DMRTTRfm/Z02dR.png" alt="Network标签中两个比较重要的按钮" /></p>
+
+<p>现在我们要用到<code>Network</code>功能，所以切换到<code>Network</code>选项卡。然后，我们点击“说谢谢”按钮。我们观察到，<code>Network</code>选项卡下出现了一个条目：
+<img src="http://pic.yupoo.com/hansnow/DMRTUjgi/LnVxV.png" alt="关键POST出现" /></p>
+
+<p>这里我们需要关注两个点，首先是<code>Path</code>==&gt;<code>thanks.php</code>。然后是<code>Method</code>==&gt;<code>POST</code>，也就是说，在我们点“说谢谢”按钮的时候，实际上是向<code>thanks.php</code>发送了一个<code>POST</code>请求[^2]。</p>
+
+<p>点击这个POST请求查看详情，注意框框中的内容<code>Request URL:http://bt.byr.cn/thanks.php</code>和<code>id:152137</code>。第一个是我们发送POST请求的URL，也就是说，是这个URL接受了浏览器发送的请求；第二个是请求过程中发送的参数（表），这里也就是种子ID（还记得我们最开始打开了哪个URL吗？）</p>
+
+<p>到此，我们已经清楚的了解了在点击“说谢谢”按钮时，浏览器都做了哪些事儿。那接下来就是用Python模拟这个动作了。</p>
+
+<h1 id="用python实现">用Python实现</h1>
+
+<p>让我们整理一下思路，说谢谢的核心就是一个POST请求，这个请求有两个变量，<code>Request URL</code>是固定的，<code>id</code>是种子ID。也就是说只要我们得到多少种子ID也就会得到相应的魔力值。那么接下来我们要做的就是抓取全站的种子ID。</p>
+
+<p>打开一个种子页面<a href="http://bt.byr.cn/torrents.php">http://bt.byr.cn/torrents.php</a>，然后右键-&gt;查看网页源代码，我们发现有很多类似这样的代码：</p>
+
+<ul>
+<li><code>href=&quot;details.php?id=152186&amp;amp;hit=1&quot;</code></li>
+<li><code>href=&quot;viewsnatches.php?id=152186&quot;</code></li>
+<li><code>href=&quot;comment.php?action=add&amp;amp;pid=152186&amp;amp;type=torrent&quot;</code></li>
+<li><code>href=&quot;download.php?id=152186&quot;</code></li>
+</ul>
+
+<p>这里面都包含了我们需要的种子ID<code>152186</code>，所以方法就有了，只要通过正则表达式将网页源码中的种子ID匹配出来就可以了。</p>
+
+<p>于是，我们祭出今天的第二个大杀器——BeatutifulSoup。</p>
+
+<blockquote>
+<p>Beautiful Soup 是用 Python 写的一个 HTML/XML 的解析器，它可以很好的处理不规范标记并生成剖析树。通常用来分析爬虫抓取的web文档。对于 不规则的 Html文档，也有很多的补全功能，节省了开发者的时间和精力。</p>
+</blockquote>
+
+<p>简单说，BeautifulSoup的作用是让我们更方便的在HTML代码中找东西。</p>
+
+<h2 id="材料已备齐-开搞">材料已备齐，开搞</h2>
+
+<p>从这里开始我们按事件发生的先后顺序讲……要不然我怕讲乱了……</p>
+
+<h2 id="登录">登录</h2>
+
+<p>登录是以后所有操作的基础，所以我们先看看登录的过程。打开Chrome开发者工具，找到Network选项，把Preserve log选中。然后我们登录一下BT
+![很不幸，BT今天挂掉了，截图只能以后搞了]()</p>
+
+<p>我们可以看到，登录的POST请求中发出了四个数据username、password、imagestring和imagehash。前两个不用说，是你的用户名密码。imagestring是你输入的验证码字符，imagehash是与这张验证码图片对应的一个hash值，只有hash值和你输入的string值成功匹配时你才能登录。</p>
+
+<p>好像说着说着就有点罗嗦了，有空慢慢写吧……to be continued</p>
+
+    </section>
+
+    
+    <section class="post-tags" style="padding-bottom:60px;">
+        <div class="post-meta tags">
+            <i class="fa fa-fw fa-tag"></i>
+            
+        </div>
+    </section>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "hansnow-blog" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <section class="share">
+    <p class="backtotop"><a data-scroll href="#site-head"><i class="fa fa-lg fa-fw fa-angle-double-up"></i></a><a data-scroll class="backtotoptext" href="#site-head"> Back to top</a></p>
+    <p class="info prompt">Share</p>
+    <a href="http://twitter.com/share?text=%e5%8c%97%e9%82%ae%e4%ba%baBT%e2%80%9c%e8%af%b4%e8%b0%a2%e8%b0%a2%e2%80%9d%e5%88%b7%e5%88%86&url=https%3a%2f%2fhansnow.me%2fpost%2fbyrbt-thanks-cheater%2f" title="Share on Twitter"
+        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <i class="fa fa-2x fa-fw fa-twitter-square"></i> <span class="hidden">Twitter</span>
+    </a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhansnow.me%2fpost%2fbyrbt-thanks-cheater%2f" title="Share on Facebook"
+        onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <i class="fa fa-2x fa-fw fa-facebook-square" style="margin-left: -8px"></i> <span class="hidden">Facebook</span>
+    </a>
+    <a href="https://plus.google.com/share?url=https%3a%2f%2fhansnow.me%2fpost%2fbyrbt-thanks-cheater%2f" title="Share on Google+"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <i class="fa fa-2x fa-fw fa-google-plus-square" style="margin-left: -8px"></i> <span class="hidden">Google+</span>
+    </a>
+</section>
+
+    <footer class="post-footer">
+        <section class="author">
+    <div class="authorimage" style="background: url(https://hansnow.me/img/avatar.jpg)"></div>
+    <h4>Hansnow</h4>
+    <p class="bio">胖子/伪极客/伪码农/曾经爱跑步/业余吃货</p>
+    <p class="meta">
+      <i class="fa fa-fw fa-map-marker"></i> Beijing
+    </p>
+</section>
+    </footer>
+    
+</article>
+
+    </main>
+
+    <footer class="site-footer">
+	<div class="inner">
+		<section class="footer-social">
+      
+      <a href="//twitter.com/hansnow2012" target="_blank" title="Twitter"><i class="fa fa-2x fa-fw fa-twitter"></i> <span class="hidden">Twitter</span></a>&nbsp;
+      
+      
+      
+      
+      
+      
+      <a href="//github.com/hansnow" target="_blank" title="GitHub"><i class="fa fa-2x fa-fw fa-github"></i> <span class="hidden">GitHub</span></a>&nbsp;
+      
+      
+      
+      
+  </section>
+
+		<section class="copyright">&copy; 2018 <a href="https://hansnow.me/">Hansnow</a>. </section>
+	</div>
+</footer>
+
+    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://hansnow.me/js/index.js"></script>
+<script src="https://hansnow.me/js/smooth-scroll.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.8.0/highlight.min.js"></script>
+
+
+<script>
+    smoothScroll.init({
+        speed: 800,
+        easing: 'easeInOutCubic',
+        updateURL: false,
+        offset: 125,
+    });
+</script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-28999513-4', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+</body>
+</html>

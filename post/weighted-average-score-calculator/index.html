@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <title>加权平均成绩计算器 &middot; Han&#39;s Blog</title>
+    <meta name="author" content="Hansnow">
+    <meta name="description" content="小寒写字的地方">
+    <meta name="generator" content="Hugo 0.52" />
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+    <!-- RSS autodiscovery -->
+    
+
+    <link rel="shortcut icon" href="https://hansnow.me/img/favicon.ico">
+    <link rel="stylesheet" href="//cdn.bootcss.com/normalize/5.0.0/normalize.min.css">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="https://hansnow.me/css/screen.css">
+    <link rel="stylesheet" href="https://hansnow.me/css/github.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.8.0/styles/default.min.css">
+    
+
+    
+    <link rel="shortcut icon" type="image/x-icon" href="https://hansnow.me/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="https://hansnow.me/favicon.ico">
+    
+
+    <!-- Stylesheet for theme color -->
+    <style type="text/css">
+    a, a:visited {color: #33cc99;}
+    .pagination a {color: #33cc99;}
+    .gist .gist-file .gist-meta a:visited {color: #33cc99 !important;}
+    a:focus, a:hover {color: #178b6b;}
+    h1.post-title a:focus, h1.post-title a:hover, h1.blog-title a:focus, h1.blog-title a:hover {color: #178b6b;}
+    .older-posts:hover, .newer-posts:hover {color: #178b6b;}
+</style>
+</head>
+
+<body class="home-template">
+    <header id="site-head">
+	
+	<h1 class="blog-title"><a href="https://hansnow.me/">Han&rsquo;s Blog</a></h1>
+	
+	
+</header>
+    
+    
+    <main class="content" role="main">
+    
+<article class="post">
+    <header>
+        <h1 class="post-title">加权平均成绩计算器</h1>
+        <div class="post-meta">
+            <time datetime="14 July 2015">
+                14 July 2015
+            </time>
+        </div>
+    </header>
+
+    <section class="post-content">
+        
+
+<p>大三刚刚结束，学院根据前三个学年的成绩发布了预排名表。在签字确认之前当然还是自己算算比较放心，所以写了这个小脚本用来计算自己上学以来的所有学科的加权平均分（不包括任选课）</p>
+
+<h3 id="截图">截图</h3>
+
+<p>因为教务系统加了验证码，所以这次使用了GUI。但是我只会用Tkinter，所以别期待太好看。大概就长下面这样了。</p>
+
+<p>登录界面：
+<img src="http://pic.yupoo.com/hansnow/ENIER1y8/aN0Pm.png" alt="登录界面" /></p>
+
+<!-- more -->
+
+<p>错误提示：
+<img src="http://pic.yupoo.com/hansnow/ENIERueb/4q6NA.png" alt="错误提示" /></p>
+
+<p>主界面：
+<img src="http://pic.yupoo.com/hansnow/ENIERN0y/kRZWO.png" alt="主界面" /></p>
+
+<h3 id="使用说明">使用说明</h3>
+
+<h4 id="源码方式">源码方式</h4>
+
+<p>在使用源码方式运行前，请确保你已经安装了Python环境（目前只支持2.X），并安装了<code>requests</code>、<code>beautifulsoup4</code>、<code>Pillow</code>这三个库（项目源码中附带了<code>requirements.txt</code>文件）</p>
+
+<p>从<a href="https://github.com/hansnow/bupt-wavg-score">项目地址</a>克隆源码，然后执行<code>./score.py</code>即可。</p>
+
+<h4 id="可执行文件-未完成">可执行文件（未完成）</h4>
+
+<p>双击下载下来的EXE文件即可。
+计划用cx_Freeze打包一下，估计明天才有时间弄了。</p>
+
+<h3 id="写在后面">写在后面</h3>
+
+<ul>
+<li>强烈推荐使用源码方式运行，程序代码都看得到，如果出了问题自己调试起来也方便</li>
+<li>非常不愿意打包EXE，毕竟直接给可执行文件的话总会有人说三道四。如果选择可执行文件方式运行的话请自行承担所有风险</li>
+<li>草草发布，我只在Win8下测试了。肉身不在学校，只能Mac开虚拟机开发，超苦逼的。不过我猜其他环境问题应该不大，尤其是*nix系，最可能出问题的地方应该是字符串编码</li>
+<li>代码在<a href="https://github.com/hansnow/bupt-wavg-score">Github</a>上，使用中出现什么问题可以直接在这篇文章下评论或者在去<a href="https://github.com/hansnow/bupt-wavg-score">Github</a>开issue</li>
+<li>祝大家保研/出国/考研成功！</li>
+</ul>
+
+    </section>
+
+    
+    <section class="post-tags" style="padding-bottom:60px;">
+        <div class="post-meta tags">
+            <i class="fa fa-fw fa-tag"></i>
+            
+        </div>
+    </section>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "hansnow-blog" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <section class="share">
+    <p class="backtotop"><a data-scroll href="#site-head"><i class="fa fa-lg fa-fw fa-angle-double-up"></i></a><a data-scroll class="backtotoptext" href="#site-head"> Back to top</a></p>
+    <p class="info prompt">Share</p>
+    <a href="http://twitter.com/share?text=%e5%8a%a0%e6%9d%83%e5%b9%b3%e5%9d%87%e6%88%90%e7%bb%a9%e8%ae%a1%e7%ae%97%e5%99%a8&url=https%3a%2f%2fhansnow.me%2fpost%2fweighted-average-score-calculator%2f" title="Share on Twitter"
+        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <i class="fa fa-2x fa-fw fa-twitter-square"></i> <span class="hidden">Twitter</span>
+    </a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhansnow.me%2fpost%2fweighted-average-score-calculator%2f" title="Share on Facebook"
+        onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <i class="fa fa-2x fa-fw fa-facebook-square" style="margin-left: -8px"></i> <span class="hidden">Facebook</span>
+    </a>
+    <a href="https://plus.google.com/share?url=https%3a%2f%2fhansnow.me%2fpost%2fweighted-average-score-calculator%2f" title="Share on Google+"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <i class="fa fa-2x fa-fw fa-google-plus-square" style="margin-left: -8px"></i> <span class="hidden">Google+</span>
+    </a>
+</section>
+
+    <footer class="post-footer">
+        <section class="author">
+    <div class="authorimage" style="background: url(https://hansnow.me/img/avatar.jpg)"></div>
+    <h4>Hansnow</h4>
+    <p class="bio">胖子/伪极客/伪码农/曾经爱跑步/业余吃货</p>
+    <p class="meta">
+      <i class="fa fa-fw fa-map-marker"></i> Beijing
+    </p>
+</section>
+    </footer>
+    
+</article>
+
+    </main>
+
+    <footer class="site-footer">
+	<div class="inner">
+		<section class="footer-social">
+      
+      <a href="//twitter.com/hansnow2012" target="_blank" title="Twitter"><i class="fa fa-2x fa-fw fa-twitter"></i> <span class="hidden">Twitter</span></a>&nbsp;
+      
+      
+      
+      
+      
+      
+      <a href="//github.com/hansnow" target="_blank" title="GitHub"><i class="fa fa-2x fa-fw fa-github"></i> <span class="hidden">GitHub</span></a>&nbsp;
+      
+      
+      
+      
+  </section>
+
+		<section class="copyright">&copy; 2018 <a href="https://hansnow.me/">Hansnow</a>. </section>
+	</div>
+</footer>
+
+    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://hansnow.me/js/index.js"></script>
+<script src="https://hansnow.me/js/smooth-scroll.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.8.0/highlight.min.js"></script>
+
+
+<script>
+    smoothScroll.init({
+        speed: 800,
+        easing: 'easeInOutCubic',
+        updateURL: false,
+        offset: 125,
+    });
+</script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-28999513-4', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+</body>
+</html>
