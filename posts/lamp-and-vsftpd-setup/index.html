@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+<meta itemprop="name" content="Ubuntu下的LAMP和vsftpd配置">
+<meta itemprop="description" content="写在前头 很难想象我竟然起了一个这么 ordinary 的 tilte，事实上标题里说的这个问题已经虐了我一个晚上，尤其是 vsftpd，当初在树莓派上配置过 vsf">
+
+
+<meta itemprop="datePublished" content="2014-10-10T09:31:08&#43;08:00" />
+<meta itemprop="dateModified" content="2014-10-10T09:31:08&#43;08:00" />
+<meta itemprop="wordCount" content="1100">
+
+
+
+<meta itemprop="keywords" content="" />
+<meta property="og:title" content="Ubuntu下的LAMP和vsftpd配置" />
+<meta property="og:description" content="写在前头 很难想象我竟然起了一个这么 ordinary 的 tilte，事实上标题里说的这个问题已经虐了我一个晚上，尤其是 vsftpd，当初在树莓派上配置过 vsf" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hansnow.me/posts/lamp-and-vsftpd-setup/" />
+<meta property="article:published_time" content="2014-10-10T09:31:08&#43;08:00"/>
+<meta property="article:modified_time" content="2014-10-10T09:31:08&#43;08:00"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Ubuntu下的LAMP和vsftpd配置"/>
+<meta name="twitter:description" content="写在前头 很难想象我竟然起了一个这么 ordinary 的 tilte，事实上标题里说的这个问题已经虐了我一个晚上，尤其是 vsftpd，当初在树莓派上配置过 vsf"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Ubuntu下的LAMP和vsftpd配置</title>
+	<link rel="stylesheet" href="https://hansnow.me/css/style.min.b9e5a5fb55503e7b3459df375dfc837923fa86925305256cfaebb86bafdd00a2.css" integrity="sha256-ueWl+1VQPns0Wd83XfyDeSP6hpJTBSVs+uu4a6/dAKI=">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://hansnow.me/">Xiaohan&#39;s Blog</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					<a href="https://hansnow.me/posts/">Posts</a>
+					<a href="https://hansnow.me/about/">About</a>
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://github.com/hansnow/" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="https://twitter.com/hansnow2012/" target="_blank" rel="noopener me" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://hansnow.me/posts/">Posts</a></li>
+			<li><a href="https://hansnow.me/about/">About</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Oct 10, 2014</span></div>
+				<h1>Ubuntu下的LAMP和vsftpd配置</h1>
+			</header>
+			<div class="content">
+				
+
+<h2 id="写在前头">写在前头<a href="#写在前头" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>很难想象我竟然起了一个这么 ordinary 的 tilte，事实上标题里说的这个问题已经虐了我一个晚上，尤其是 vsftpd，当初在树莓派上配置过 vsftpd，隐约记得没有多长时间就配好了。结果隔了半年再次尝试 vsftpd 的时候，这货狠狠地抽了我一巴掌，死活配不对，尤其是用户那一块儿，简直烦死了。好不容易折腾好了，马克一下，防止下次被虐。</p>
+
+<h2 id="环境说明">环境说明<a href="#环境说明" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>写这篇文章的时候没在学校，手上只有一台弱不经风的 air，小心翼翼地在虚拟机里装了 Ubuntu Server 12.04。网卡用了桥接模式，所以虚拟机里的系统得到的是类似 192.168.1.xxx 这样的 IP。其他的就没什么好说的了。</p>
+
+<h2 id="先换个源">先换个源<a href="#先换个源" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>北京地区的推荐北京交通大学或者搜狐的源，速度超快哦~如果你在教育网的话那就随意了，清华、北理工、华中科大等等速度都好得不得了。</p>
+
+<p>以北交源为例，从<a href="http://mirror.bjtu.edu.cn/cn/howto.html">这个页面</a>查看源地址，然后修改 sources.list。</p>
+
+<p>修改之前，先备份一下</p>
+
+<pre><code>sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak
+</code></pre>
+
+<p>然后放心大胆地修改 sources.list 即可</p>
+
+<pre><code>sudo vim /etc/apt/sources.list
+</code></pre>
+
+<h2 id="lamp-安装">LAMP 安装<a href="#lamp-安装" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>LAMP 是指 Linux、Apache、MySql 和 PHP。安装过程很简单，麻烦的是配置。首先在终端里运行下面的命令进行 LAMP 的安装</p>
+
+<pre><code>sudo apt-get install apache2 mysql-server mysql-client php5 php5-gd php5-mysql
+</code></pre>
+
+<p><strong>安装过程中需要设置 mysql 的 root 密码，这个很重要，请千万记牢！</strong>
+<img src="/img/lamp-and-vsftpd-setup/set-password.png" alt="设置mysql的root密码" />
+由于 LAMP 大部分操作与/var/www 目录相关，为了方便，修改该目录的权限为普通用户可访问。</p>
+
+<pre><code>sudo chmod 777 /var/www/
+</code></pre>
+
+<h2 id="phpmyadmin-的安装">phpmyadmin 的安装<a href="#phpmyadmin-的安装" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>phpmyadmin 可以让我们方便的通过 web 管理服务器上的 mysql 数据库。</p>
+
+<pre><code>sudo apt-get install phpmyadmin
+</code></pre>
+
+<p>在安装过程中会要求选择 Web server：apache2 或 lighttpd，选择 apache2
+<img src="/img/lamp-and-vsftpd-setup/choose-server.png" alt="选择服务器类型" />
+然后会要求输入一个密码，建议和 mysql 的 root 密码设置成一样的。
+<img src="/img/lamp-and-vsftpd-setup/phpmyadmin.png" alt="配置phpmyadmin" />
+然后把 phpmyadmin 的目录链接到/var/www 里面</p>
+
+<pre><code>sudo ln -s /usr/share/phpmyadmin /var/www
+</code></pre>
+
+<p>到此，LAMP 和 phpmyadmin 的安装就完成了，这时候在浏览器中输入虚拟机的 IP 地址，可以看到“It works！“的提示，说明 Apache 已经正常工作了。进入 phpmyadmin 目录，就像这样 192.168.1.xxx/phpmyadmin，就可以看到 phpmyadmin 的首页了，用户名 root，密码用前面几步输入的 root 密码就可以登录啦。
+<img src="/img/lamp-and-vsftpd-setup/phpmyadmin-login.png" alt="phpmyadmin登陆界面" />
+<img src="/img/lamp-and-vsftpd-setup/phpmyadmin-main.png" alt="phpmyadmin主界面" /></p>
+
+<h2 id="万恶的-vsftpd">万恶的 vsftpd<a href="#万恶的-vsftpd" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p><em>本来是想弄成多用户的，每个用户只能操作自己目录内的文件，但是操作的时候遇到了一些问题，waiting for update</em>
+我们的应用场景是有多个 FTP 用户，分别对应着不同的 Home 目录，并且彼此只能在各自的目录内进行操作。</p>
+
+<p>先安装</p>
+
+<pre><code>sudo apt-get install vsftpd
+</code></pre>
+
+<p>然后我们建立一个 ftp 用户，比如叫 ftpuser</p>
+
+<pre><code>sudo useradd ftpuser
+sudo passwd ftpuser
+</code></pre>
+
+<p>为 ftpuser 建立用户目录</p>
+
+<pre><code>sudo mkdir /home/ftpuser
+</code></pre>
+
+<p>改变权限</p>
+
+<pre><code>sudo chown -R ftpuser /home/ftpuser
+</code></pre>
+
+<p>用户部分处理完，我们开始配置 vsftpd</p>
+
+<pre><code>sudo vim /etc/vsftpd.conf
+</code></pre>
+
+<p>参考下面的配置</p>
+
+<blockquote>
+<p>#禁止匿名用户登录</p>
+</blockquote>
+
+<pre><code>anonymous_enable=NO
+#本地用户可用
+local_enable=YES
+#可用写操作
+write_enable=YES
+#权限掩码(设置上传的文件为所有用户可读写,这样Apache就有读写权限了)
+local_umask=000
+#不须要显示某目录下文件信息
+dirmessage_enable=NO
+#加点登录后的提示语句
+ftpd_banner=Hello~~
+</code></pre>
+
+<p>重启 vsftpd，上面的配置就生效啦~</p>
+
+<pre><code>sudo /etc/init.d/vsftpd restart
+</code></pre>
+
+<h2 id="参考文档">参考文档<a href="#参考文档" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<ol>
+<li><a href="https://www.linuxidc.com/Linux/2012-05/61079.htm">Ubuntu 12.04下LAMP安装配置</a></li>
+</ol>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1100 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2014-10-10 09:31 &#43;0800</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://hansnow.me/posts/byrbt-thanks-cheater/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;Newer</span><br><span>北邮人BT“说谢谢”刷分</span>
+			</a>
+			<a class="prev-post" href="https://hansnow.me/posts/young-couple-in-2012/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>记途中的一对情侣</span>
+			</a>
+		</div>
+		<div id="comments" class="thin">
+<div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "hansnow-blog" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 <a href="https://hansnow.me/">Xiaohan Li</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://hansnow.me/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+	<script src="https://hansnow.me/js/main.min.784417f5847151f848c339cf0acb13a06cbb648b1483435a28ed4556c4ead69b.js" integrity="sha256-eEQX9YRxUfhIwznPCssToGy7ZIsUg0NaKO1FVsTq1ps="></script>
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-28999513-4', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>

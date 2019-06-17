@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+<meta itemprop="name" content="北邮教务系统评教脚本">
+<meta itemprop="description" content="2015 年 01 月 09 日更新 由于教务系统的地址变更以及验证码的加入，Python 版的评教脚本已经失效，请使用 javascript 版 每个学期末都烦心事儿不断，评教这件小事儿">
+
+
+<meta itemprop="datePublished" content="2015-01-09T09:38:17&#43;08:00" />
+<meta itemprop="dateModified" content="2015-01-09T09:38:17&#43;08:00" />
+<meta itemprop="wordCount" content="2228">
+
+
+
+<meta itemprop="keywords" content="" />
+<meta property="og:title" content="北邮教务系统评教脚本" />
+<meta property="og:description" content="2015 年 01 月 09 日更新 由于教务系统的地址变更以及验证码的加入，Python 版的评教脚本已经失效，请使用 javascript 版 每个学期末都烦心事儿不断，评教这件小事儿" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hansnow.me/posts/bupt-pingjiao/" />
+<meta property="article:published_time" content="2015-01-09T09:38:17&#43;08:00"/>
+<meta property="article:modified_time" content="2015-01-09T09:38:17&#43;08:00"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="北邮教务系统评教脚本"/>
+<meta name="twitter:description" content="2015 年 01 月 09 日更新 由于教务系统的地址变更以及验证码的加入，Python 版的评教脚本已经失效，请使用 javascript 版 每个学期末都烦心事儿不断，评教这件小事儿"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>北邮教务系统评教脚本</title>
+	<link rel="stylesheet" href="https://hansnow.me/css/style.min.b9e5a5fb55503e7b3459df375dfc837923fa86925305256cfaebb86bafdd00a2.css" integrity="sha256-ueWl+1VQPns0Wd83XfyDeSP6hpJTBSVs+uu4a6/dAKI=">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://hansnow.me/">Xiaohan&#39;s Blog</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					<a href="https://hansnow.me/posts/">Posts</a>
+					<a href="https://hansnow.me/about/">About</a>
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://github.com/hansnow/" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="https://twitter.com/hansnow2012/" target="_blank" rel="noopener me" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://hansnow.me/posts/">Posts</a></li>
+			<li><a href="https://hansnow.me/about/">About</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Jan 9, 2015</span></div>
+				<h1>北邮教务系统评教脚本</h1>
+			</header>
+			<div class="content">
+				
+
+<p><strong>2015 年 01 月 09 日更新</strong></p>
+
+<p><strong>由于教务系统的地址变更以及验证码的加入，Python 版的评教脚本已经失效，请使用 javascript 版</strong></p>
+
+<p>每个学期末都烦心事儿不断，评教这件小事儿还非得过来掺合掺合。扒着眼睛找那个巨小无比的选择按钮真实让人烦躁啊。作为死工科生，总得做点什么。于是就写了个评教脚本。</p>
+
+<p>总共有两个版本（考虑到坑爹的 windows，实际上是三个）</p>
+
+<ul>
+<li>JavaScript 版</li>
+<li>Python 版</li>
+<li>Py4win 版（src+exe）</li>
+</ul>
+
+<p>这三个版本有点儿不一样。Javascript 版就是一串 JS 代码，直接在浏览器中运行即可，不需要额外下载安装任何东西，但是缺点是每次只能评一位老师，也就是说你还是得运行十几次代码才能完成教学评估。Python 版是一个.py 文件，在大多数 Linux/OSX 上都能直接运行，而且能一次性完成评教，是真正的“一键评教”。单独把 Windows 割裂出来是因为编码问题，cmd 的默认编码是 gb2312，于是就出现了乱码，于是把 Python 版的代码做一些编码上的处理就变成了 Py4win 版，考虑到大部分 windows 下没安装 Python，于是用 py2exe 打包了一个 exe，算作是 Py4win 版的一部分吧。</p>
+
+<p>下面开始挨个介绍使用方法。</p>
+
+<h2 id="javascript-版-一般般推荐">JavaScript 版（一般般推荐）<a href="#javascript-版-一般般推荐" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>复制下面这串代码(有结构的未压缩版请看文章最后)</p>
+
+<pre><code class="language-javascript">javascript: &quot;URP 综合教务系统 - 教学评估 - 教学评估&quot;==window.document.title?x=window.frames[1].frames[2].document.getElementsByTagName(&quot;input&quot;):&quot;问卷评估页面&quot;==window.document.title?x=window.document.getElementsByTagName(&quot;input&quot;):alert(&quot;请确认一个你现在是不是处于正确的页面上，本程序只能在教学评估页面运行！&quot;),data=new Array;for(var i=0;i&lt;x.length;i++)&quot;hidden&quot;==x[i].type&amp;&amp;data.push(x[i].value);function post(t,e,n){n=n||&quot;post&quot;;var a=document.createElement(&quot;form&quot;);for(var i in a.setAttribute(&quot;method&quot;,n),a.setAttribute(&quot;action&quot;,t),e)if(e.hasOwnProperty(i)){var d=document.createElement(&quot;input&quot;);d.setAttribute(&quot;type&quot;,&quot;hidden&quot;),d.setAttribute(&quot;name&quot;,i),d.setAttribute(&quot;value&quot;,e[i]),a.appendChild(d)}document.body.appendChild(a),a.submit()}post(&quot;http://jwxt.bupt.edu.cn/jxpgXsAction.do?oper=wjpg&quot;,{wjbm:data[0],bpr:data[1],pgnr:data[2],&quot;0000000021&quot;:&quot;10_0.95&quot;,&quot;0000000022&quot;:&quot;10_0.95&quot;,&quot;0000000023&quot;:&quot;5_0.95&quot;,&quot;0000000024&quot;:&quot;20_0.95&quot;,&quot;0000000025&quot;:&quot;10_0.95&quot;,&quot;0000000026&quot;:&quot;5_0.95&quot;,&quot;0000000027&quot;:&quot;5_0.95&quot;,&quot;0000000028&quot;:&quot;20_0.95&quot;,&quot;0000000029&quot;:&quot;10_0.95&quot;,&quot;0000000030&quot;:&quot;5_0.95&quot;,zgpj:&quot;老师讲课很认真的啦~&quot;},&quot;post&quot;);
+</code></pre>
+
+<p>登录教务系统，打开教学评估页面，选择一门课程进行评估，于是就到了下面这个页面（由于测试的关系我已经评完了）</p>
+
+<p><img src="/img/bupt-pingjiao/questionnaire.png" alt="评教页面" /></p>
+
+<p>然后，在浏览器的<strong>地址栏</strong>中粘贴刚刚复制的代码，注意，一定要带前面的<code>javascript:</code>，有些浏览器由于安全方面的考虑会自动过滤掉这串字符，这时就需要我们手动加上。粘贴好之后按回车，脚本会自动完成选择和提交的动作。默认都选“优”也就是第二档。</p>
+
+<p>还有两种使用方式可以参考：</p>
+
+<ul>
+<li>把这段代码加到书签里，到评估页面后直接点书签就行了</li>
+<li>在浏览器开发者工具的 Console 中执行</li>
+</ul>
+
+<h2 id="python-版-最推荐">Python 版（最推荐）<a href="#python-版-最推荐" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>如果你用的是 Linux/OSX，那么在安装完<code>BeautifulSoup</code>后就可以直接调用了。</p>
+
+<p>BeautifulSoup 安装命令：<code>sudo pip install beautifulsoup4</code>或<code>sudo easy_install beautifulsoup4</code></p>
+
+<p>运行脚本：<code>python pingjiao.py</code></p>
+
+<p>运行效果大概就是下面这样</p>
+
+<p><img src="/img/bupt-pingjiao/cli.png" alt="脚本运行效果" /></p>
+
+<h2 id="py4win-版-src-推荐-exe-非常不推荐">Py4win 版（src 推荐，exe 非常不推荐）<a href="#py4win-版-src-推荐-exe-非常不推荐" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>如果你在 windows 上装了 python，那么使用方法和 Python 版完全相同，装好 BeautifulSoup 就能用了。</p>
+
+<p>如果没装，但是你还非常想用的话，那只能用 exe 版本了。exe 版本使用非常简单，双击“评教.exe”运行就行了。</p>
+
+<p>exe 版本使用 Py4win 版的 src+py2exe 打包，使用上没有任何问题，但是我不推荐用。直接给可执行文件是个很敏感的事儿，你完全可以说我植入了什么奇怪的东西，虽然我什么都没干。所以如果你使用 exe 版的话，你必须<strong>自己承担这带来的一切后果</strong>。有点危言耸听了，但是永远要相信「6L+Z5Liq5LiW55WM5LiK5bCP5Lq66L+Y5piv5oy65aSa55qE」。</p>
+
+<h2 id="所有的文件来这儿下载">所有的文件来这儿下载<a href="#所有的文件来这儿下载" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<ol>
+<li>源码在 <a href="https://github.com/hansnow/bupt-pingjiao">GitHub</a></li>
+<li>Py4win 版的 exe 文件在 <a href="https://pan.baidu.com/s/1c09v6Ru">百度云</a></li>
+</ol>
+
+<h2 id="special-thanks">Special Thanks<a href="#special-thanks" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>感谢 @qiukun 大神的指导。良师益友没得说~</p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>2228 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2015-01-09 09:38 &#43;0800</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://hansnow.me/posts/catch-cold-and-headache-in-2015/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;Newer</span><br><span>病中杂记</span>
+			</a>
+			<a class="prev-post" href="https://hansnow.me/posts/hello-2015/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Hi! 2015!</span>
+			</a>
+		</div>
+		<div id="comments" class="thin">
+<div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "hansnow-blog" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 <a href="https://hansnow.me/">Xiaohan Li</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://hansnow.me/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+	<script src="https://hansnow.me/js/main.min.784417f5847151f848c339cf0acb13a06cbb648b1483435a28ed4556c4ead69b.js" integrity="sha256-eEQX9YRxUfhIwznPCssToGy7ZIsUg0NaKO1FVsTq1ps="></script>
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-28999513-4', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>
