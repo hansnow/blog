@@ -1,19 +1,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 	<channel>
 		<title>Posts on Xiaohan&#39;s Blog</title>
-		<link>https://hansnow.me/posts/</link>
+		<link>https://yunbo.li/posts/</link>
 		<description>Recent content in Posts on Xiaohan&#39;s Blog</description>
 		<generator>Hugo -- gohugo.io</generator>
 		<language>zh-cn</language>
 		<lastBuildDate>Tue, 14 Jul 2015 22:54:20 +0800</lastBuildDate>
-		<atom:link href="https://hansnow.me/posts/index.xml" rel="self" type="application/rss+xml" />
+		<atom:link href="https://yunbo.li/posts/index.xml" rel="self" type="application/rss+xml" />
 		
 		<item>
 			<title>加权平均成绩计算器</title>
-			<link>https://hansnow.me/posts/weighted-average-score-calculator/</link>
+			<link>https://yunbo.li/posts/weighted-average-score-calculator/</link>
 			<pubDate>Tue, 14 Jul 2015 22:54:20 +0800</pubDate>
 			
-			<guid>https://hansnow.me/posts/weighted-average-score-calculator/</guid>
+			<guid>https://yunbo.li/posts/weighted-average-score-calculator/</guid>
 			<description>大三刚刚结束，学院根据前三个学年的成绩发布了预排名表。在签字确认之前当然还是自己算算比较放心，所以写了这个小脚本用来计算自己上学以来的所有学</description>
 			<content type="html"><![CDATA[
 
@@ -62,10 +62,10 @@
 		
 		<item>
 			<title>给妹子看的简易翻墙教程</title>
-			<link>https://hansnow.me/posts/gfw-bypass-tutorial-for-someone/</link>
+			<link>https://yunbo.li/posts/gfw-bypass-tutorial-for-someone/</link>
 			<pubDate>Sat, 11 Jul 2015 15:53:01 +0800</pubDate>
 			
-			<guid>https://hansnow.me/posts/gfw-bypass-tutorial-for-someone/</guid>
+			<guid>https://yunbo.li/posts/gfw-bypass-tutorial-for-someone/</guid>
 			<description>先简单介绍一下翻墙的原理。由于墙的存在，我们的电脑不能和某些网站建立连接，这些网站我们叫做“被 GFW 认证的网站”。于是，我们需要一台既可以和我们</description>
 			<content type="html"><![CDATA[
 
@@ -119,10 +119,10 @@
 		
 		<item>
 			<title>病中杂记</title>
-			<link>https://hansnow.me/posts/catch-cold-and-headache-in-2015/</link>
+			<link>https://yunbo.li/posts/catch-cold-and-headache-in-2015/</link>
 			<pubDate>Sun, 14 Jun 2015 22:15:53 +0800</pubDate>
 			
-			<guid>https://hansnow.me/posts/catch-cold-and-headache-in-2015/</guid>
+			<guid>https://yunbo.li/posts/catch-cold-and-headache-in-2015/</guid>
 			<description>孤独的人是可耻的 ——张楚 生病的人是痛苦的 ——我 不知道隔了多久，又得了我最擅长的感冒。这次感冒来势汹汹，让我很快进入了生病状态。当然我也没怂，</description>
 			<content type="html"><![CDATA[<blockquote>
 <p>孤独的人是可耻的 ——张楚</p>
@@ -148,10 +148,10 @@
 		
 		<item>
 			<title>北邮教务系统评教脚本</title>
-			<link>https://hansnow.me/posts/bupt-pingjiao/</link>
+			<link>https://yunbo.li/posts/bupt-pingjiao/</link>
 			<pubDate>Fri, 09 Jan 2015 09:38:17 +0800</pubDate>
 			
-			<guid>https://hansnow.me/posts/bupt-pingjiao/</guid>
+			<guid>https://yunbo.li/posts/bupt-pingjiao/</guid>
 			<description>2015 年 01 月 09 日更新 由于教务系统的地址变更以及验证码的加入，Python 版的评教脚本已经失效，请使用 javascript 版 每个学期末都烦心事儿不断，评教这件小事儿</description>
 			<content type="html"><![CDATA[
 
@@ -228,10 +228,10 @@
 		
 		<item>
 			<title>Hi! 2015!</title>
-			<link>https://hansnow.me/posts/hello-2015/</link>
+			<link>https://yunbo.li/posts/hello-2015/</link>
 			<pubDate>Sun, 04 Jan 2015 17:38:09 +0800</pubDate>
 			
-			<guid>https://hansnow.me/posts/hello-2015/</guid>
+			<guid>https://yunbo.li/posts/hello-2015/</guid>
 			<description>时间过得真快，转眼就到 2015 年了。回想起去年的这个时候，我已经住院了。在写这篇日志之前，我又看了看去年在这个时候写的日记，看完之后心里挺不是滋味</description>
 			<content type="html"><![CDATA[<p>时间过得真快，转眼就到 2015 年了。回想起去年的这个时候，我已经住院了。在写这篇日志之前，我又看了看去年在这个时候写的日记，看完之后心里挺不是滋味儿的，当时确实是受了不少委屈。</p>
 
@@ -255,10 +255,10 @@
 		
 		<item>
 			<title>又是一个月，好久不见</title>
-			<link>https://hansnow.me/posts/long-time-no-see-at-the-end-of-2014/</link>
+			<link>https://yunbo.li/posts/long-time-no-see-at-the-end-of-2014/</link>
 			<pubDate>Fri, 05 Dec 2014 20:18:40 +0800</pubDate>
 			
-			<guid>https://hansnow.me/posts/long-time-no-see-at-the-end-of-2014/</guid>
+			<guid>https://yunbo.li/posts/long-time-no-see-at-the-end-of-2014/</guid>
 			<description>啊，又一个月没来了。一转眼又到了年末，想起去年这个时候，痛苦就要来了，我当然不想让它来。过得真快，一转眼一年又过去了。 今年刚刚开始，我去车道</description>
 			<content type="html"><![CDATA[<p>啊，又一个月没来了。一转眼又到了年末，想起去年这个时候，痛苦就要来了，我当然不想让它来。过得真快，一转眼一年又过去了。</p>
 
@@ -280,10 +280,10 @@
 		
 		<item>
 			<title>当我再一次谈论起奋斗时，我在想些什么</title>
-			<link>https://hansnow.me/posts/what-do-i-think-when-i-talk-about-fighting/</link>
+			<link>https://yunbo.li/posts/what-do-i-think-when-i-talk-about-fighting/</link>
 			<pubDate>Tue, 04 Nov 2014 10:04:20 +0800</pubDate>
 			
-			<guid>https://hansnow.me/posts/what-do-i-think-when-i-talk-about-fighting/</guid>
+			<guid>https://yunbo.li/posts/what-do-i-think-when-i-talk-about-fighting/</guid>
 			<description>最近身边的人多多少少都有点不正常，有的忙着平时的作业、实验等等琐碎的学业，有的里里外外跑来跑去，忙着各种高大上的事业。总之，大家都忙。忙着忙</description>
 			<content type="html"><![CDATA[<p>最近身边的人多多少少都有点不正常，有的忙着平时的作业、实验等等琐碎的学业，有的里里外外跑来跑去，忙着各种高大上的事业。总之，大家都忙。忙着忙着很多人就会想，我这么瞎折腾是图什么呢？这么做有什么意义吗？想到这儿，一部分人颓了，不折腾了，开始“享受”生活。另一部分人想到了奋斗，他们觉得这是一种向上的生活状态，于是咬咬牙继续拼。</p>
 
@@ -303,10 +303,10 @@
 		
 		<item>
 			<title>吸着雾霾去跑马</title>
-			<link>https://hansnow.me/posts/2014-marathon/</link>
+			<link>https://yunbo.li/posts/2014-marathon/</link>
 			<pubDate>Thu, 30 Oct 2014 10:14:06 +0800</pubDate>
 			
-			<guid>https://hansnow.me/posts/2014-marathon/</guid>
+			<guid>https://yunbo.li/posts/2014-marathon/</guid>
 			<description>欠了好久的文章，今天总算是得空给写了。话说今年是第二年参加北京马拉松，记得去年马拉松的时候，和宿舍两个人一起去参加，3 万人一起在马路上狂奔的</description>
 			<content type="html"><![CDATA[
 
@@ -354,10 +354,10 @@
 		
 		<item>
 			<title>北邮人BT“说谢谢”刷分</title>
-			<link>https://hansnow.me/posts/byrbt-thanks-cheater/</link>
+			<link>https://yunbo.li/posts/byrbt-thanks-cheater/</link>
 			<pubDate>Wed, 15 Oct 2014 09:36:37 +0800</pubDate>
 			
-			<guid>https://hansnow.me/posts/byrbt-thanks-cheater/</guid>
+			<guid>https://yunbo.li/posts/byrbt-thanks-cheater/</guid>
 			<description>前言 今天上午刚刚搬家到新的博客，这个博客使用 Markdown 语法写作，靠 DropBox 同步文章，感觉还是有点儿意思呢。之前的 Octopress 博客http://coding.yunb</description>
 			<content type="html"><![CDATA[
 
@@ -450,10 +450,10 @@
 		
 		<item>
 			<title>Ubuntu下的LAMP和vsftpd配置</title>
-			<link>https://hansnow.me/posts/lamp-and-vsftpd-setup/</link>
+			<link>https://yunbo.li/posts/lamp-and-vsftpd-setup/</link>
 			<pubDate>Fri, 10 Oct 2014 09:31:08 +0800</pubDate>
 			
-			<guid>https://hansnow.me/posts/lamp-and-vsftpd-setup/</guid>
+			<guid>https://yunbo.li/posts/lamp-and-vsftpd-setup/</guid>
 			<description>写在前头 很难想象我竟然起了一个这么 ordinary 的 tilte，事实上标题里说的这个问题已经虐了我一个晚上，尤其是 vsftpd，当初在树莓派上配置过 vsf</description>
 			<content type="html"><![CDATA[
 
@@ -580,10 +580,10 @@ ftpd_banner=Hello~~
 		
 		<item>
 			<title>记途中的一对情侣</title>
-			<link>https://hansnow.me/posts/young-couple-in-2012/</link>
+			<link>https://yunbo.li/posts/young-couple-in-2012/</link>
 			<pubDate>Mon, 06 Oct 2014 21:31:35 +0800</pubDate>
 			
-			<guid>https://hansnow.me/posts/young-couple-in-2012/</guid>
+			<guid>https://yunbo.li/posts/young-couple-in-2012/</guid>
 			<description>国庆假期回家，在自己的房间里翻出来高中时候的笔记本。翻了翻，发现了一些幼稚的文字。发上来留个纪念吧。下面这篇应该是 2012 年 3 月的。 3 月中旬，我去</description>
 			<content type="html"><![CDATA[<blockquote>
 <p>国庆假期回家，在自己的房间里翻出来高中时候的笔记本。翻了翻，发现了一些幼稚的文字。发上来留个纪念吧。下面这篇应该是 2012 年 3 月的。</p>
@@ -601,10 +601,10 @@ ftpd_banner=Hello~~
 		
 		<item>
 			<title>唠叨，从这里开始</title>
-			<link>https://hansnow.me/posts/a-new-start/</link>
+			<link>https://yunbo.li/posts/a-new-start/</link>
 			<pubDate>Wed, 10 Sep 2014 17:03:38 +0800</pubDate>
 			
-			<guid>https://hansnow.me/posts/a-new-start/</guid>
+			<guid>https://yunbo.li/posts/a-new-start/</guid>
 			<description>最近一周接触了很多 javascript 的东西，从最开始的基本 javascript 语法，到 jQuery，然后是 coffeescript，最后到了 node.js。昨晚看到了一个基于</description>
 			<content type="html"><![CDATA[<p>最近一周接触了很多 javascript 的东西，从最开始的基本 javascript 语法，到 jQuery，然后是 coffeescript，最后到了 node.js。昨晚看到了一个基于 nodej.s 的项目——hexo，当即被它漂亮的外观吸引。折腾到今天下午，终于算把博客搭建起来了。</p>
 
