@@ -21,6 +21,15 @@
     </item>
     
     <item>
+      <title>Javascript中实现继承的几种方式</title>
+      <link>https://yunbo.li/posts/inheritance-in-js/</link>
+      <pubDate>Tue, 15 Mar 2016 10:18:40 +0800</pubDate>
+      
+      <guid>https://yunbo.li/posts/inheritance-in-js/</guid>
+      <description>在ES6到来之前，JS中一直没有类的概念。而类本身又是一种非常符合人类思考方式的抽象模型，所以虽然JS不支持类，但依然可以使用功能强大的原型</description>
+    </item>
+    
+    <item>
       <title>加权平均成绩计算器</title>
       <link>https://yunbo.li/posts/weighted-average-score-calculator/</link>
       <pubDate>Tue, 14 Jul 2015 22:54:20 +0800</pubDate>
