@@ -20,37 +20,43 @@
 <p>在ES6到来之前，JS中一直没有类的概念。而类本身又是一种非常符合人类思考方式的抽象模型，所以虽然JS不支持类，但依然可以使用功能强大的原型机制来模拟类的各种行为。经过多年实践总结，开发者们逐渐形成了一些利用原型链实现类和继承的方式，通过比较这些实现方式的优缺点，我们也能更好地理解原型链机制。正是因为这些实践经验，才孕育出了今天给我们带来无限便利的ES6中类的机制。接下来让我们分析一下各种实现方式的特点吧！</p>
 
 <h3 id="朴素的原型链继承">朴素的原型链继承</h3>
-<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">SuperType</span><span class="p">()</span> <span class="p">{</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="s2">&#34;Han&#34;</span><span class="p">;</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">friends</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&#34;A&#34;</span><span class="p">,</span> <span class="s2">&#34;B&#34;</span><span class="p">];</span>
-<span class="p">}</span>
-<span class="nx">SuperType</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getName</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-  <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">;</span>
-<span class="p">};</span>
-<span class="kd">function</span> <span class="nx">SubType</span><span class="p">()</span> <span class="p">{</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">age</span> <span class="o">=</span> <span class="mi">18</span><span class="p">;</span>
-<span class="p">}</span>
-<span class="nx">SubType</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SuperType</span><span class="p">();</span>
-<span class="nx">SubType</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">=</span> <span class="nx">SubType</span><span class="p">;</span>
-<span class="nx">SubType</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getAge</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-  <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">age</span><span class="p">;</span>
-<span class="p">};</span>
-</code></pre></div>
+
+<pre><code class="language-javascript">function SuperType() {
+  this.name = &quot;Han&quot;;
+  this.friends = [&quot;A&quot;, &quot;B&quot;];
+}
+SuperType.prototype.getName = function() {
+  return this.name;
+};
+function SubType() {
+  this.age = 18;
+}
+SubType.prototype = new SuperType();
+SubType.prototype.constructor = SubType;
+SubType.prototype.getAge = function() {
+  return this.age;
+};
+</code></pre>
+
 <p>让我们声明两个<code>SubType</code>的实例试一下</p>
-<div class="highlight"><pre class="chroma"><code class="language-js" data-lang="js"><span class="kd">var</span> <span class="nx">p1</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SubType</span><span class="p">();</span>
-<span class="kd">var</span> <span class="nx">p2</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SubType</span><span class="p">();</span>
-<span class="nx">p1</span><span class="p">.</span><span class="nx">getName</span><span class="p">();</span> <span class="c1">// -&gt; &#39;Han&#39;
-</span><span class="c1"></span><span class="nx">p1</span><span class="p">.</span><span class="nx">getName</span><span class="p">();</span> <span class="c1">// -&gt; &#39;Han&#39;
-</span><span class="c1"></span><span class="nx">p1</span><span class="p">.</span><span class="nx">getAge</span><span class="p">();</span> <span class="c1">// -&gt; 18
-</span><span class="c1"></span>
-<span class="nx">p1</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="s2">&#34;Xiaohan&#34;</span><span class="p">;</span>
-<span class="nx">p1</span><span class="p">.</span><span class="nx">getName</span><span class="p">();</span> <span class="c1">// -&gt; &#39;Xiaohan&#39;
-</span><span class="c1"></span><span class="nx">p2</span><span class="p">.</span><span class="nx">getName</span><span class="p">();</span> <span class="c1">// -&gt; &#39;Han&#39;
-</span></code></pre></div>
+
+<pre><code class="language-js">var p1 = new SubType();
+var p2 = new SubType();
+p1.getName(); // -&gt; 'Han'
+p1.getName(); // -&gt; 'Han'
+p1.getAge(); // -&gt; 18
+
+p1.name = &quot;Xiaohan&quot;;
+p1.getName(); // -&gt; 'Xiaohan'
+p2.getName(); // -&gt; 'Han'
+</code></pre>
+
 <p>看起来是符合预期的对吧，子类继承了父类上定义的属性和方法，并且修改子类实例的属性时，不同实例间不会发生干扰。真的是这样吗？</p>
-<div class="highlight"><pre class="chroma"><code class="language-js" data-lang="js"><span class="nx">p1</span><span class="p">.</span><span class="nx">friends</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s2">&#34;C&#34;</span><span class="p">);</span>
-<span class="nx">p2</span><span class="p">.</span><span class="nx">friends</span><span class="p">;</span> <span class="c1">// -&gt; [&#39;A&#39;, &#39;B&#39;, &#39;C&#39;]
-</span></code></pre></div>
+
+<pre><code class="language-js">p1.friends.push(&quot;C&quot;);
+p2.friends; // -&gt; ['A', 'B', 'C']
+</code></pre>
+
 <p>等等，改了<code>p1.friends</code>之后，为什么另一个实例<code>p2</code>也被影响了？刚刚改<code>p1.name</code>的时候明明是正常的！让我们冷静一下，回头看看最开始继承的实现。由于<code>SubType.prototype = new SuperType()</code>，父类的属性实际上是声明在子类的原型(即<code>__proto__</code>，以下统一称为原型)上的，因此<code>p1.name</code>实际上是<code>p1.__proto__.name</code>，所以<strong>父类属性实际上被所有子类实例共享</strong>。我们知道操作对象属性时，内部操作<code>[[Get]]</code>和<code>[[Set]]</code>的逻辑时不一样的，<code>[[Get]]</code>会沿着原型链向上查找，而<code>[[Set]]</code>则不会，这就会造成<strong>属性遮蔽</strong>现象。因此当我们执行<code>p1.name = 'Xiaohan'</code>时，触发<code>[[Set]]</code>操作，此时<code>name</code>属性就被定义在<code>p1</code>上了，之后在取该属性的值时，由于<code>p1</code>上已经有该属性了，因此不会继续沿原型链向上查找，所以赋值行为在不同子类实例间看起来是正常的。如果不是赋值操作，那可就要小心了，比如<code>p1.friends.push('C')</code>，这并不是一个赋值操作，而且直接操作了<code>p1.friends</code>属性，按照我们刚刚说的，本质上操作的是<code>p1.__proto__.friends</code>，而这个属性是被所有实例共享的！所以很自然的，<code>p2.friends</code>也被影响了。</p>
 
 <p>所以，总结下*原型链继承*的问题：</p>
@@ -230,8 +236,10 @@
 <h2 id="javascript-版-一般般推荐">JavaScript 版（一般般推荐）</h2>
 
 <p>复制下面这串代码(有结构的未压缩版请看文章最后)</p>
-<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="nx">javascript</span><span class="o">:</span> <span class="s2">&#34;URP 综合教务系统 - 教学评估 - 教学评估&#34;</span><span class="o">==</span><span class="nb">window</span><span class="p">.</span><span class="nb">document</span><span class="p">.</span><span class="nx">title</span><span class="o">?</span><span class="nx">x</span><span class="o">=</span><span class="nb">window</span><span class="p">.</span><span class="nx">frames</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">frames</span><span class="p">[</span><span class="mi">2</span><span class="p">].</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">&#34;input&#34;</span><span class="p">)</span><span class="o">:</span><span class="s2">&#34;问卷评估页面&#34;</span><span class="o">==</span><span class="nb">window</span><span class="p">.</span><span class="nb">document</span><span class="p">.</span><span class="nx">title</span><span class="o">?</span><span class="nx">x</span><span class="o">=</span><span class="nb">window</span><span class="p">.</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">&#34;input&#34;</span><span class="p">)</span><span class="o">:</span><span class="nx">alert</span><span class="p">(</span><span class="s2">&#34;请确认一个你现在是不是处于正确的页面上，本程序只能在教学评估页面运行！&#34;</span><span class="p">),</span><span class="nx">data</span><span class="o">=</span><span class="k">new</span> <span class="nb">Array</span><span class="p">;</span><span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="nx">i</span><span class="o">&lt;</span><span class="nx">x</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="s2">&#34;hidden&#34;</span><span class="o">==</span><span class="nx">x</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">type</span><span class="o">&amp;&amp;</span><span class="nx">data</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">x</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">value</span><span class="p">);</span><span class="kd">function</span> <span class="nx">post</span><span class="p">(</span><span class="nx">t</span><span class="p">,</span><span class="nx">e</span><span class="p">,</span><span class="nx">n</span><span class="p">){</span><span class="nx">n</span><span class="o">=</span><span class="nx">n</span><span class="o">||</span><span class="s2">&#34;post&#34;</span><span class="p">;</span><span class="kd">var</span> <span class="nx">a</span><span class="o">=</span><span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s2">&#34;form&#34;</span><span class="p">);</span><span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="k">in</span> <span class="nx">a</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s2">&#34;method&#34;</span><span class="p">,</span><span class="nx">n</span><span class="p">),</span><span class="nx">a</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s2">&#34;action&#34;</span><span class="p">,</span><span class="nx">t</span><span class="p">),</span><span class="nx">e</span><span class="p">)</span><span class="k">if</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="nx">i</span><span class="p">)){</span><span class="kd">var</span> <span class="nx">d</span><span class="o">=</span><span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s2">&#34;input&#34;</span><span class="p">);</span><span class="nx">d</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s2">&#34;type&#34;</span><span class="p">,</span><span class="s2">&#34;hidden&#34;</span><span class="p">),</span><span class="nx">d</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s2">&#34;name&#34;</span><span class="p">,</span><span class="nx">i</span><span class="p">),</span><span class="nx">d</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s2">&#34;value&#34;</span><span class="p">,</span><span class="nx">e</span><span class="p">[</span><span class="nx">i</span><span class="p">]),</span><span class="nx">a</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">d</span><span class="p">)}</span><span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">a</span><span class="p">),</span><span class="nx">a</span><span class="p">.</span><span class="nx">submit</span><span class="p">()}</span><span class="nx">post</span><span class="p">(</span><span class="s2">&#34;http://jwxt.bupt.edu.cn/jxpgXsAction.do?oper=wjpg&#34;</span><span class="p">,{</span><span class="nx">wjbm</span><span class="o">:</span><span class="nx">data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="nx">bpr</span><span class="o">:</span><span class="nx">data</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="nx">pgnr</span><span class="o">:</span><span class="nx">data</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="s2">&#34;0000000021&#34;</span><span class="o">:</span><span class="s2">&#34;10_0.95&#34;</span><span class="p">,</span><span class="s2">&#34;0000000022&#34;</span><span class="o">:</span><span class="s2">&#34;10_0.95&#34;</span><span class="p">,</span><span class="s2">&#34;0000000023&#34;</span><span class="o">:</span><span class="s2">&#34;5_0.95&#34;</span><span class="p">,</span><span class="s2">&#34;0000000024&#34;</span><span class="o">:</span><span class="s2">&#34;20_0.95&#34;</span><span class="p">,</span><span class="s2">&#34;0000000025&#34;</span><span class="o">:</span><span class="s2">&#34;10_0.95&#34;</span><span class="p">,</span><span class="s2">&#34;0000000026&#34;</span><span class="o">:</span><span class="s2">&#34;5_0.95&#34;</span><span class="p">,</span><span class="s2">&#34;0000000027&#34;</span><span class="o">:</span><span class="s2">&#34;5_0.95&#34;</span><span class="p">,</span><span class="s2">&#34;0000000028&#34;</span><span class="o">:</span><span class="s2">&#34;20_0.95&#34;</span><span class="p">,</span><span class="s2">&#34;0000000029&#34;</span><span class="o">:</span><span class="s2">&#34;10_0.95&#34;</span><span class="p">,</span><span class="s2">&#34;0000000030&#34;</span><span class="o">:</span><span class="s2">&#34;5_0.95&#34;</span><span class="p">,</span><span class="nx">zgpj</span><span class="o">:</span><span class="s2">&#34;老师讲课很认真的啦~&#34;</span><span class="p">},</span><span class="s2">&#34;post&#34;</span><span class="p">);</span>
-</code></pre></div>
+
+<pre><code class="language-javascript">javascript: &quot;URP 综合教务系统 - 教学评估 - 教学评估&quot;==window.document.title?x=window.frames[1].frames[2].document.getElementsByTagName(&quot;input&quot;):&quot;问卷评估页面&quot;==window.document.title?x=window.document.getElementsByTagName(&quot;input&quot;):alert(&quot;请确认一个你现在是不是处于正确的页面上，本程序只能在教学评估页面运行！&quot;),data=new Array;for(var i=0;i&lt;x.length;i++)&quot;hidden&quot;==x[i].type&amp;&amp;data.push(x[i].value);function post(t,e,n){n=n||&quot;post&quot;;var a=document.createElement(&quot;form&quot;);for(var i in a.setAttribute(&quot;method&quot;,n),a.setAttribute(&quot;action&quot;,t),e)if(e.hasOwnProperty(i)){var d=document.createElement(&quot;input&quot;);d.setAttribute(&quot;type&quot;,&quot;hidden&quot;),d.setAttribute(&quot;name&quot;,i),d.setAttribute(&quot;value&quot;,e[i]),a.appendChild(d)}document.body.appendChild(a),a.submit()}post(&quot;http://jwxt.bupt.edu.cn/jxpgXsAction.do?oper=wjpg&quot;,{wjbm:data[0],bpr:data[1],pgnr:data[2],&quot;0000000021&quot;:&quot;10_0.95&quot;,&quot;0000000022&quot;:&quot;10_0.95&quot;,&quot;0000000023&quot;:&quot;5_0.95&quot;,&quot;0000000024&quot;:&quot;20_0.95&quot;,&quot;0000000025&quot;:&quot;10_0.95&quot;,&quot;0000000026&quot;:&quot;5_0.95&quot;,&quot;0000000027&quot;:&quot;5_0.95&quot;,&quot;0000000028&quot;:&quot;20_0.95&quot;,&quot;0000000029&quot;:&quot;10_0.95&quot;,&quot;0000000030&quot;:&quot;5_0.95&quot;,zgpj:&quot;老师讲课很认真的啦~&quot;},&quot;post&quot;);
+</code></pre>
+
 <p>登录教务系统，打开教学评估页面，选择一门课程进行评估，于是就到了下面这个页面（由于测试的关系我已经评完了）</p>
 
 <p><img src="/img/bupt-pingjiao/questionnaire.png" alt="评教页面" /></p>
