@@ -78,37 +78,43 @@
 <p>在ES6到来之前，JS中一直没有类的概念。而类本身又是一种非常符合人类思考方式的抽象模型，所以虽然JS不支持类，但依然可以使用功能强大的原型机制来模拟类的各种行为。经过多年实践总结，开发者们逐渐形成了一些利用原型链实现类和继承的方式，通过比较这些实现方式的优缺点，我们也能更好地理解原型链机制。正是因为这些实践经验，才孕育出了今天给我们带来无限便利的ES6中类的机制。接下来让我们分析一下各种实现方式的特点吧！</p>
 
 <h3 id="朴素的原型链继承">朴素的原型链继承<a href="#朴素的原型链继承" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">SuperType</span><span class="p">()</span> <span class="p">{</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="s2">&#34;Han&#34;</span><span class="p">;</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">friends</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&#34;A&#34;</span><span class="p">,</span> <span class="s2">&#34;B&#34;</span><span class="p">];</span>
-<span class="p">}</span>
-<span class="nx">SuperType</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getName</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-  <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">;</span>
-<span class="p">};</span>
-<span class="kd">function</span> <span class="nx">SubType</span><span class="p">()</span> <span class="p">{</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">age</span> <span class="o">=</span> <span class="mi">18</span><span class="p">;</span>
-<span class="p">}</span>
-<span class="nx">SubType</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SuperType</span><span class="p">();</span>
-<span class="nx">SubType</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">=</span> <span class="nx">SubType</span><span class="p">;</span>
-<span class="nx">SubType</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getAge</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-  <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">age</span><span class="p">;</span>
-<span class="p">};</span>
-</code></pre></div>
+
+<pre><code class="language-javascript">function SuperType() {
+  this.name = &quot;Han&quot;;
+  this.friends = [&quot;A&quot;, &quot;B&quot;];
+}
+SuperType.prototype.getName = function() {
+  return this.name;
+};
+function SubType() {
+  this.age = 18;
+}
+SubType.prototype = new SuperType();
+SubType.prototype.constructor = SubType;
+SubType.prototype.getAge = function() {
+  return this.age;
+};
+</code></pre>
+
 <p>让我们声明两个<code>SubType</code>的实例试一下</p>
-<div class="highlight"><pre class="chroma"><code class="language-js" data-lang="js"><span class="kd">var</span> <span class="nx">p1</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SubType</span><span class="p">();</span>
-<span class="kd">var</span> <span class="nx">p2</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SubType</span><span class="p">();</span>
-<span class="nx">p1</span><span class="p">.</span><span class="nx">getName</span><span class="p">();</span> <span class="c1">// -&gt; &#39;Han&#39;
-</span><span class="c1"></span><span class="nx">p1</span><span class="p">.</span><span class="nx">getName</span><span class="p">();</span> <span class="c1">// -&gt; &#39;Han&#39;
-</span><span class="c1"></span><span class="nx">p1</span><span class="p">.</span><span class="nx">getAge</span><span class="p">();</span> <span class="c1">// -&gt; 18
-</span><span class="c1"></span>
-<span class="nx">p1</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="s2">&#34;Xiaohan&#34;</span><span class="p">;</span>
-<span class="nx">p1</span><span class="p">.</span><span class="nx">getName</span><span class="p">();</span> <span class="c1">// -&gt; &#39;Xiaohan&#39;
-</span><span class="c1"></span><span class="nx">p2</span><span class="p">.</span><span class="nx">getName</span><span class="p">();</span> <span class="c1">// -&gt; &#39;Han&#39;
-</span></code></pre></div>
+
+<pre><code class="language-js">var p1 = new SubType();
+var p2 = new SubType();
+p1.getName(); // -&gt; 'Han'
+p1.getName(); // -&gt; 'Han'
+p1.getAge(); // -&gt; 18
+
+p1.name = &quot;Xiaohan&quot;;
+p1.getName(); // -&gt; 'Xiaohan'
+p2.getName(); // -&gt; 'Han'
+</code></pre>
+
 <p>看起来是符合预期的对吧，子类继承了父类上定义的属性和方法，并且修改子类实例的属性时，不同实例间不会发生干扰。真的是这样吗？</p>
-<div class="highlight"><pre class="chroma"><code class="language-js" data-lang="js"><span class="nx">p1</span><span class="p">.</span><span class="nx">friends</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s2">&#34;C&#34;</span><span class="p">);</span>
-<span class="nx">p2</span><span class="p">.</span><span class="nx">friends</span><span class="p">;</span> <span class="c1">// -&gt; [&#39;A&#39;, &#39;B&#39;, &#39;C&#39;]
-</span></code></pre></div>
+
+<pre><code class="language-js">p1.friends.push(&quot;C&quot;);
+p2.friends; // -&gt; ['A', 'B', 'C']
+</code></pre>
+
 <p>等等，改了<code>p1.friends</code>之后，为什么另一个实例<code>p2</code>也被影响了？刚刚改<code>p1.name</code>的时候明明是正常的！让我们冷静一下，回头看看最开始继承的实现。由于<code>SubType.prototype = new SuperType()</code>，父类的属性实际上是声明在子类的原型(即<code>__proto__</code>，以下统一称为原型)上的，因此<code>p1.name</code>实际上是<code>p1.__proto__.name</code>，所以<strong>父类属性实际上被所有子类实例共享</strong>。我们知道操作对象属性时，内部操作<code>[[Get]]</code>和<code>[[Set]]</code>的逻辑时不一样的，<code>[[Get]]</code>会沿着原型链向上查找，而<code>[[Set]]</code>则不会，这就会造成<strong>属性遮蔽</strong>现象。因此当我们执行<code>p1.name = 'Xiaohan'</code>时，触发<code>[[Set]]</code>操作，此时<code>name</code>属性就被定义在<code>p1</code>上了，之后在取该属性的值时，由于<code>p1</code>上已经有该属性了，因此不会继续沿原型链向上查找，所以赋值行为在不同子类实例间看起来是正常的。如果不是赋值操作，那可就要小心了，比如<code>p1.friends.push('C')</code>，这并不是一个赋值操作，而且直接操作了<code>p1.friends</code>属性，按照我们刚刚说的，本质上操作的是<code>p1.__proto__.friends</code>，而这个属性是被所有实例共享的！所以很自然的，<code>p2.friends</code>也被影响了。</p>
 
 <p>所以，总结下*原型链继承*的问题：</p>
