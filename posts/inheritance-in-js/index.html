@@ -11,7 +11,7 @@
 
 <meta itemprop="datePublished" content="2016-03-15T10:18:40&#43;08:00" />
 <meta itemprop="dateModified" content="2016-03-15T10:18:40&#43;08:00" />
-<meta itemprop="wordCount" content="1022">
+<meta itemprop="wordCount" content="2534">
 
 
 
@@ -79,7 +79,7 @@
 
 <h3 id="朴素的原型链继承">朴素的原型链继承<a href="#朴素的原型链继承" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 
-<pre><code class="language-javascript">function SuperType() {
+<pre><code class="language-js">function SuperType() {
   this.name = &quot;Han&quot;;
   this.friends = [&quot;A&quot;, &quot;B&quot;];
 }
@@ -117,17 +117,125 @@ p2.friends; // -&gt; ['A', 'B', 'C']
 
 <p>等等，改了<code>p1.friends</code>之后，为什么另一个实例<code>p2</code>也被影响了？刚刚改<code>p1.name</code>的时候明明是正常的！让我们冷静一下，回头看看最开始继承的实现。由于<code>SubType.prototype = new SuperType()</code>，父类的属性实际上是声明在子类的原型(即<code>__proto__</code>，以下统一称为原型)上的，因此<code>p1.name</code>实际上是<code>p1.__proto__.name</code>，所以<strong>父类属性实际上被所有子类实例共享</strong>。我们知道操作对象属性时，内部操作<code>[[Get]]</code>和<code>[[Set]]</code>的逻辑时不一样的，<code>[[Get]]</code>会沿着原型链向上查找，而<code>[[Set]]</code>则不会，这就会造成<strong>属性遮蔽</strong>现象。因此当我们执行<code>p1.name = 'Xiaohan'</code>时，触发<code>[[Set]]</code>操作，此时<code>name</code>属性就被定义在<code>p1</code>上了，之后在取该属性的值时，由于<code>p1</code>上已经有该属性了，因此不会继续沿原型链向上查找，所以赋值行为在不同子类实例间看起来是正常的。如果不是赋值操作，那可就要小心了，比如<code>p1.friends.push('C')</code>，这并不是一个赋值操作，而且直接操作了<code>p1.friends</code>属性，按照我们刚刚说的，本质上操作的是<code>p1.__proto__.friends</code>，而这个属性是被所有实例共享的！所以很自然的，<code>p2.friends</code>也被影响了。</p>
 
-<p>所以，总结下*原型链继承*的问题：</p>
+<p>所以，总结下原型链继承的问题：</p>
 
 <ol>
 <li>父类属性会被所有子类实例共享，如果操作不慎(比如上面例子中的对数组进行<code>push</code>操作等)，会影响所有实例，造成诡异的问题</li>
 <li>父类属性在声明时就被写死了，不能由子类定义，使用上不够灵活</li>
 </ol>
 
+<h3 id="经典继承-借用构造函数">经典继承(借用构造函数)<a href="#经典继承-借用构造函数" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<pre><code class="language-js">function SuperType(name) {
+  this.name = name;
+  this.friends = [&quot;A&quot;, &quot;B&quot;];
+  this.getName = function() {
+    return this.name;
+  };
+}
+function SubType() {
+  SuperType.call(this, &quot;Han&quot;);
+  this.age = 18;
+  this.getAge = function() {
+    return this.age;
+  };
+}
+</code></pre>
+
+<p>在经典继承中，子类借用了父类的构造函数，将父类声明的属性和方法通过“借用”的方式声明在自己身上，从而既达到了继承的目的，又避免了原型链继承带来的子类实例共享父类属性的问题。但通过观察该实现，我们不难发现父类的所属性和方法在每个子类实例上都有一份儿，虽然实例间不会相互影响了，但本该得到复用的父类和子类方法，并没有真正被复用，造成了极大的资源浪费。</p>
+
+<h3 id="组合继承-伪经典继承">组合继承(伪经典继承)<a href="#组合继承-伪经典继承" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<pre><code class="language-js">function SuperType(name) {
+  this.name = name;
+  this.friends = [&quot;A&quot;, &quot;B&quot;];
+}
+SuperType.prototype.getName = function() {
+  return this.name;
+};
+function SubType() {
+  SuperType.call(this, &quot;Han&quot;);
+  this.age = 18;
+}
+SubType.prototype = new SuperType();
+SubType.prototype.constructor = SubType;
+SubType.prototype.getAge = function() {
+  return this.age;
+};
+</code></pre>
+
+<p>顾名思义，组合继承结合了原型链继承和经典继承的做法，既能复用父类和子类方法，又能通过借用构造函数的方式，将父类属性定义在每个子类实例上，达到不相互干扰的目的。那么组合继承可以称得上完美的继承实现了吗？</p>
+
+<p>并不是，让我们对照实现代码仔细分析一下。子类内部<code>SuperType.call(this, &quot;Han&quot;)</code>和<code>SubType.prototype = new SuperType()</code>造成的结果是父类构造函数被调用了两次，该操作造成的结果是父类属性同时存在于子类实例和子类实例的原型上！因为上面提到的属性遮蔽现象，所以这种冗余对于开发者来说是感知不到的，但冗余毕竟是事实存在的，虽然不影响结果，但依然是一种资源浪费。</p>
+
+<h3 id="原型式继承">原型式继承<a href="#原型式继承" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<pre><code class="language-js">var person = {
+  name: &quot;Han&quot;,
+  getName: function() {
+    return this.name;
+  }
+};
+
+var p1 = Object.create(person);
+p1.name = &quot;Xiaohan&quot;;
+p1.getName(); // -&gt; Xiaohan
+</code></pre>
+
+<p>原型式继承由知名大神Douglas Crockford提出，借助<code>Object.create</code>一脚踢开Function，直接借用原型链实现对象与对象之间的继承关系。这种继承的实现方法，思路简单直接，不会带来<code>new来new去</code>引起的各种“坑”，但由于出现比较晚，所以用的人相对来说也没那么多。YDKJS的作者Kyle Simpson倒是对这种模式赞赏有加，在其书中用了很大篇幅介绍它的优点和灵活性。</p>
+
+<h3 id="寄生式继承">寄生式继承<a href="#寄生式继承" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<pre><code class="language-js">function createAnotherPerson(original) {
+  var clone = Object.create(original);
+  clone.sayName = function() {
+    console.log(&quot;name is&quot;, this.name);
+  };
+  return clone;
+}
+
+var person = { name: &quot;Han&quot; };
+var han = createAnotherPerson(person);
+han.name = &quot;xiaohan&quot;;
+han.sayName();
+</code></pre>
+
+<p>寄生式继承可以理解为位于原型式继承的扩展，它使用了工厂函数来创建实例，并为每个实例添加方法，增加了方法的可复用性。</p>
+
+<h3 id="组合寄生式继承">组合寄生式继承<a href="#组合寄生式继承" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<pre><code class="language-js">function inheritPrototype(subType, superType) {
+  subType.prototype = Object.create(superType.prototype);
+  subType.prototype.constructor = subType;
+}
+function SuperType(name) {
+  this.name = name;
+  this.friends = [&quot;A&quot;, &quot;B&quot;];
+}
+SuperType.prototype.getName = function() {
+  return this.name;
+};
+function SubType() {
+  SuperType.call(this, &quot;Han&quot;);
+  this.age = 18;
+}
+inheritPrototype(SubType, SuperType);
+SubType.prototype.constructor = SubType;
+SubType.prototype.getAge = function() {
+  return this.age;
+};
+</code></pre>
+
+<p>在初看《红宝书》时，对继承这一块儿的内容安排很困惑，前面都是在用函数实现继承，怎么突然插入了原型式继承和寄生式继承呢？看到组合寄生式继承时，我释然了。在<code>Object.create</code>出现之前，开发者们一直使用<code>new</code>来构建原型链，这多多少少有些晦涩难懂，而<code>Object.create</code>简单直接的逻辑，无疑大大简化了构建原型链的难度，那能不能用<code>Object.create</code>来解决一下上面提到的几种继承实现的问题呢？</p>
+
+<p>答案是肯定的，让我们的目光回到组合继承。我们提到组合继承的缺点是父类构造函数被调用两次，造成了势必被遮蔽的父类属性出现在了子类实例的原型链上，这是一种资源浪费。那有没有办法避免这种资源浪费呢？我们既要构造<code>SubType.prototype</code>和<code>SuperType.prototype</code>的原型链关系，又要避免<code>SuperType</code>的冗余调用，防止资源浪费。显然，这时候该<code>Object.create</code>登场了。观察上面的代码，<code>inheritPrototype</code>就达到了我们的目的：既构造了原型链关系，又避免了这个过程中<code>SuperType</code>的调用。至此，继承的实现算是达到了比较完善的程度。</p>
+
+<p>我们知道，ES6的类只是语法糖，其背后依然是基于原型链实现的，其实现方式和组合寄生式继承大致相同，但又有细微差别，未来有时间会总结下ES6的类是如何实现的。</p>
+
 			</div>
 			<hr class="post-end">
 			<footer class="post-info">
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1022 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>2534 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2016-03-15 10:18 &#43;0800</p>
 			</footer>
 		</article>
