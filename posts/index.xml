@@ -84,7 +84,7 @@
 <li>null</li>
 <li>false</li>
 <li>±0/NaN</li>
-<li>&rdquo;&rdquo;</li>
+<li><code>&quot;&quot;</code></li>
 </ol>
 
 <p>于是 ToBoolean 操作的规则是这样的</p>
@@ -150,7 +150,7 @@ a &lt;= b; // -&gt; true
 a &gt;= b; // -&gt; true
 </code></pre>
 
-<p>结果乍一看非常反直接，前三个表达式说明 a 既不大于 b，也不小于 b，也不等于 b，但是后面的大于等于和小于等于却是 true。其实结合上面说的很容易理解，比如<code>a &lt;= b</code>的结果是由<code>a &gt; b</code>的结果推导出来的，因此才是 true。</p>
+<p>结果乍一看非常反直觉，前三个表达式说明 a 既不大于 b，也不小于 b，也不等于 b，但是后面的大于等于和小于等于却是 true。其实结合上面说的很容易理解，比如<code>a &lt;= b</code>的结果是由<code>a &gt; b</code>的结果推导出来的，因此才是 true。</p>
 
 <p>总结一下，虽然 JS 中的宽松相等和逻辑比较有很多反直觉的结果，但其背后都有规则可循，掌握了这些规则之后，我们发现宽松相等也不是那么坑，比如<code>obj == null</code>就能一下子判断出 obj 是不是 null 或者 undefined 这两种情况，很实用，也很安全。希望大家看了这篇文章之后能摘掉有色眼镜来看待<code>==</code>运算符，并对它加以合理利用。</p>
 ]]></content>
