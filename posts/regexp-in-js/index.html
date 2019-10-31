@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta itemprop="name" content="学习使用正则表达式">
+<meta itemprop="description" content="正则表达式很早就有了解，有需要的时候，也能借助搜索引擎简单使用一下，但似乎从来没有比较系统的学习过，所以这段时间看了一些资料，记录一下正则表">
+
+
+<meta itemprop="datePublished" content="2016-07-18T20:40:33&#43;08:00" />
+<meta itemprop="dateModified" content="2016-07-18T20:40:33&#43;08:00" />
+<meta itemprop="wordCount" content="1271">
+
+
+
+<meta itemprop="keywords" content="" />
+<meta property="og:title" content="学习使用正则表达式" />
+<meta property="og:description" content="正则表达式很早就有了解，有需要的时候，也能借助搜索引擎简单使用一下，但似乎从来没有比较系统的学习过，所以这段时间看了一些资料，记录一下正则表" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yunbo.li/posts/regexp-in-js/" />
+<meta property="article:published_time" content="2016-07-18T20:40:33+08:00" />
+<meta property="article:modified_time" content="2016-07-18T20:40:33+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="学习使用正则表达式"/>
+<meta name="twitter:description" content="正则表达式很早就有了解，有需要的时候，也能借助搜索引擎简单使用一下，但似乎从来没有比较系统的学习过，所以这段时间看了一些资料，记录一下正则表"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>学习使用正则表达式</title>
+	<link rel="stylesheet" href="https://yunbo.li/css/style.min.b9e5a5fb55503e7b3459df375dfc837923fa86925305256cfaebb86bafdd00a2.css" integrity="sha256-ueWl+1VQPns0Wd83XfyDeSP6hpJTBSVs+uu4a6/dAKI=" crossorigin="anonymous">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://yunbo.li/">Xiaohan&#39;s Blog</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://yunbo.li/posts/">Posts</a>
+				<a href="https://yunbo.li/about/">About</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://github.com/hansnow/" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="https://twitter.com/hansnow2012/" target="_blank" rel="noopener me" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://yunbo.li/posts/">Posts</a></li>
+			<li><a href="https://yunbo.li/about/">About</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Jul 18, 2016</span></div>
+				<h1>学习使用正则表达式</h1>
+			</header>
+			<div class="content">
+				
+
+<p>正则表达式很早就有了解，有需要的时候，也能借助搜索引擎简单使用一下，但似乎从来没有比较系统的学习过，所以这段时间看了一些资料，记录一下正则表达式的一些概念、用法以及 JS 中的相关 API。</p>
+
+<h3 id="字符组">字符组<a href="#字符组" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>字符组包含了要匹配字符的所有可能情况，使用<code>[]</code>表示，具体有如下三种描述方法</p>
+
+<ol>
+<li>列举。即列举所有可能字符，如<code>[abc]</code></li>
+<li>范围。即使用范围表示所有可能字符，如 <code>[a-z]</code></li>
+<li>取反。在上面两种写法的基础上，在前面加上<code>^</code>表示取反逻辑，如<code>[^abc]</code></li>
+</ol>
+
+<p>对于常见的字符组，正则引擎内置了一些简写</p>
+
+<ol>
+<li><code>\d</code>表示<code>[0-9]</code></li>
+<li><code>\D</code>表示<code>[^0-9]</code></li>
+<li><code>\w</code>表示<code>[0-9a-zA-Z_]</code></li>
+<li><code>\W</code>表示<code>[^0-9a-zA-Z_]</code></li>
+<li><code>\s</code>表示<code>[ \t\v\n\r\f]</code>，\v 是垂直制表符，\f 是换页符</li>
+<li><code>\S</code>表示<code>[^ \t\v\n\r\f]</code></li>
+<li><code>.</code>表示<code>[^\n\r\u2028\u2029]</code>表示几乎所有字符，除了换行符、回车符、行分隔符、段分隔符</li>
+</ol>
+
+<h3 id="量词">量词<a href="#量词" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>量词用来描述某个模式出现的次数，有两种描述方法</p>
+
+<ol>
+<li><code>{m,}</code>表示至少出现 m 次</li>
+<li><code>{m}</code>表示恰好出现 m 次</li>
+</ol>
+
+<p>同样，对于常用的量词，引擎内置了一些简写</p>
+
+<ol>
+<li><code>?</code>表示<code>{0, 1}</code></li>
+<li><code>+</code>表示<code>{1,}</code></li>
+<li><code>*</code>表示<code>{0,}</code></li>
+</ol>
+
+<h3 id="贪婪与非贪婪">贪婪与非贪婪<a href="#贪婪与非贪婪" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>先看一个例子</p>
+
+<pre><code class="language-js">var regex = /\d{1,3}/g;
+var string = &quot;1 12 123 1234&quot;;
+console.log(string.match(regex));
+// -&gt; [&quot;1&quot;, &quot;12&quot;, &quot;123&quot;, &quot;123&quot;, &quot;4&quot;]
+</code></pre>
+
+<p><code>\d{1,3}</code>的意思是数字出现 1 到 3 次，但从结果可以观察到，这个模式会尽量多的匹配数字，即能匹配 3 个就不匹配两个，能匹配两个就不匹配一个。这种行为就是贪婪匹配。那么什么是非贪婪匹配的，在原来的例子上简单修改一下。</p>
+
+<pre><code class="language-js">var regex = /\d{1,3}?/g;
+var string = &quot;1 12 123 1234&quot;;
+console.log(string.match(regex));
+// -&gt; [&quot;1&quot;, &quot;1&quot;, &quot;2&quot;, &quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;]
+</code></pre>
+
+<p>匹配出来的结果都是一个数字，即能匹配一个就不匹配两个。通过上面的例子可以得到两个结论</p>
+
+<ol>
+<li>量词默认是贪婪的</li>
+<li>在模式后面加<code>?</code>可以将贪婪匹配变成非贪婪匹配</li>
+</ol>
+
+<h3 id="选择分支">选择分支<a href="#选择分支" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>语法是<code>(p1|p2)</code>，表示模式 p1 或模式 p2。看个例子</p>
+
+<pre><code class="language-js">var regex = /\d{3}|\d{5}/g;
+var string = &quot;12345&quot;;
+console.log(string.match(regex));
+// -&gt; [&quot;123&quot;]
+</code></pre>
+
+<p>从这个例子也可以看出来，选择分支是非贪婪的，即 p1 满足了，就不再去尝试匹配 p2 了。</p>
+
+<h3 id="匹配位置">匹配位置<a href="#匹配位置" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>除了匹配字符，正则表达式的一个重磅功能就是匹配位置，即开头、结尾和字符之间的位置。一些常用的表示方法如下</p>
+
+<ol>
+<li><code>^</code> 匹配开头，多行模式下匹配行开头</li>
+<li><code>$</code> 匹配结尾，多行模式下匹配行结尾</li>
+<li><code>\b</code> 匹配\w 和\W 的位置，自然就有包括\w 和^以及\w 和\$之间的位置</li>
+<li><code>\B</code> 是<code>\b</code>取反</li>
+<li><code>(?=p)</code> 模式 p 前面的位置 positive lookahead</li>
+<li><code>(?!p)</code> 上面的逻辑取反 negative lookahead</li>
+</ol>
+
+<p><strong>2019-5-30 更新，ES6 中新增了两个位置</strong></p>
+
+<ol>
+<li>(?&lt;=p) 模式 p 后面的位置 positive lookbehind</li>
+<li>(?&lt;!p) 上面的逻辑取反 negative lookbehind</li>
+</ol>
+
+<h3 id="引用分组">引用分组<a href="#引用分组" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>被<code>()</code>包裹起来的模式可以在正则表达式中和 JS 相关 API 中被引用，当被正则表达式引用时，使用<code>\数字</code>表示，在被 JS 相关 API 引用时，使用<code>$数字</code>表示，其中的<code>数字</code>范围从 1 到 99。</p>
+
+<p>下面通过几个例子展示一下具体的用法</p>
+
+<pre><code class="language-js">var regex = /\d{4}(-|\/)\d{2}\1\d{2}/;
+var string1 = &quot;2016-07-18&quot;;
+var string2 = &quot;2016/07/18&quot;;
+var string3 = &quot;2016-07/18&quot;;
+regex.test(string1); // -&gt; true
+regex.test(string2); // -&gt; true
+regex.test(string3); // -&gt; false
+
+var regex = /(\d{4})-(\d{2})-(\d{2})/;
+var string = &quot;2016-07-18&quot;;
+var result = string.replace(regex, &quot;$2/$3/$1&quot;);
+console.log(result); // -&gt; 07/18/2016
+</code></pre>
+
+<h3 id="元字符">元字符<a href="#元字符" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>在编写正则表达式时，遇到下面这 20 个字符，要记得转义</p>
+
+<ol>
+<li><code>\ | /</code></li>
+<li><code>() [] {}</code></li>
+<li><code>+ - * =</code></li>
+<li><code>. , : ! ?</code></li>
+<li><code>^ $</code></li>
+</ol>
+
+<h3 id="js-api">JS API<a href="#js-api" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>在 JS 中可以通过如下 API 使用正则表达式完成查找、替换、验证等操作</p>
+
+<ol>
+<li>regex.test(string)</li>
+<li>regex.exec(string)</li>
+<li>string.search(regex)</li>
+<li>string.match(regex)</li>
+<li>string.split(regex)</li>
+<li>string.replace(regex, string/function)</li>
+</ol>
+
+<h3 id="其他有趣的点">其他有趣的点<a href="#其他有趣的点" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>如果要匹配任意字符，可以使用逻辑取反操作来完成，比如<code>[\d\D]</code> / <code>[\s\S]</code> / <code>[\w\W]</code> / <code>[^]</code></p>
+
+<p>如果要写一个什么都匹配不了的模式，可以这样：<code>/.^/</code>即任意字符后面有个开头，这当然是不存在的</p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1271 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2016-07-18 20:40 &#43;0800</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="prev-post" href="https://yunbo.li/posts/inheritance-in-js/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Javascript中实现继承的几种方式</span>
+			</a>
+		</div>
+		<div id="comments" class="thin">
+<div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "hansnow-blog" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 <a href="https://yunbo.li/">Xiaohan Li</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://yunbo.li/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://yunbo.li/js/bundle.min.4a9a0ac3d2217822c7865b4161e6c2a71de1d70492264337755427898dd718f6.js" integrity="sha256-SpoKw9IheCLHhltBYebCpx3h1wSSJkM3dVQniY3XGPY=" crossorigin="anonymous"></script>
+	
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-28999513-4', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>

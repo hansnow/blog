@@ -21,6 +21,15 @@
     </item>
     
     <item>
+      <title>学习使用正则表达式</title>
+      <link>https://yunbo.li/posts/regexp-in-js/</link>
+      <pubDate>Mon, 18 Jul 2016 20:40:33 +0800</pubDate>
+      
+      <guid>https://yunbo.li/posts/regexp-in-js/</guid>
+      <description>正则表达式很早就有了解，有需要的时候，也能借助搜索引擎简单使用一下，但似乎从来没有比较系统的学习过，所以这段时间看了一些资料，记录一下正则表</description>
+    </item>
+    
+    <item>
       <title>Javascript中实现继承的几种方式</title>
       <link>https://yunbo.li/posts/inheritance-in-js/</link>
       <pubDate>Tue, 15 Mar 2016 10:18:40 +0800</pubDate>

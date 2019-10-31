@@ -13,12 +13,17 @@
   </url>
   
   <url>
-    <loc>https://yunbo.li/posts/inheritance-in-js/</loc>
-    <lastmod>2016-03-15T10:18:40+08:00</lastmod>
+    <loc>https://yunbo.li/posts/</loc>
+    <lastmod>2016-07-18T20:40:33+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://yunbo.li/posts/</loc>
+    <loc>https://yunbo.li/posts/regexp-in-js/</loc>
+    <lastmod>2016-07-18T20:40:33+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://yunbo.li/posts/inheritance-in-js/</loc>
     <lastmod>2016-03-15T10:18:40+08:00</lastmod>
   </url>
   

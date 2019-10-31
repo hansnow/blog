@@ -5,8 +5,168 @@
 		<description>Recent content in Posts on Xiaohan&#39;s Blog</description>
 		<generator>Hugo -- gohugo.io</generator>
 		<language>zh-cn</language>
-		<lastBuildDate>Tue, 15 Mar 2016 10:18:40 +0800</lastBuildDate>
+		<lastBuildDate>Mon, 18 Jul 2016 20:40:33 +0800</lastBuildDate>
 		<atom:link href="https://yunbo.li/posts/index.xml" rel="self" type="application/rss+xml" />
+		
+		<item>
+			<title>学习使用正则表达式</title>
+			<link>https://yunbo.li/posts/regexp-in-js/</link>
+			<pubDate>Mon, 18 Jul 2016 20:40:33 +0800</pubDate>
+			
+			<guid>https://yunbo.li/posts/regexp-in-js/</guid>
+			<description>正则表达式很早就有了解，有需要的时候，也能借助搜索引擎简单使用一下，但似乎从来没有比较系统的学习过，所以这段时间看了一些资料，记录一下正则表</description>
+			<content type="html"><![CDATA[
+
+<p>正则表达式很早就有了解，有需要的时候，也能借助搜索引擎简单使用一下，但似乎从来没有比较系统的学习过，所以这段时间看了一些资料，记录一下正则表达式的一些概念、用法以及 JS 中的相关 API。</p>
+
+<h3 id="字符组">字符组</h3>
+
+<p>字符组包含了要匹配字符的所有可能情况，使用<code>[]</code>表示，具体有如下三种描述方法</p>
+
+<ol>
+<li>列举。即列举所有可能字符，如<code>[abc]</code></li>
+<li>范围。即使用范围表示所有可能字符，如 <code>[a-z]</code></li>
+<li>取反。在上面两种写法的基础上，在前面加上<code>^</code>表示取反逻辑，如<code>[^abc]</code></li>
+</ol>
+
+<p>对于常见的字符组，正则引擎内置了一些简写</p>
+
+<ol>
+<li><code>\d</code>表示<code>[0-9]</code></li>
+<li><code>\D</code>表示<code>[^0-9]</code></li>
+<li><code>\w</code>表示<code>[0-9a-zA-Z_]</code></li>
+<li><code>\W</code>表示<code>[^0-9a-zA-Z_]</code></li>
+<li><code>\s</code>表示<code>[ \t\v\n\r\f]</code>，\v 是垂直制表符，\f 是换页符</li>
+<li><code>\S</code>表示<code>[^ \t\v\n\r\f]</code></li>
+<li><code>.</code>表示<code>[^\n\r\u2028\u2029]</code>表示几乎所有字符，除了换行符、回车符、行分隔符、段分隔符</li>
+</ol>
+
+<h3 id="量词">量词</h3>
+
+<p>量词用来描述某个模式出现的次数，有两种描述方法</p>
+
+<ol>
+<li><code>{m,}</code>表示至少出现 m 次</li>
+<li><code>{m}</code>表示恰好出现 m 次</li>
+</ol>
+
+<p>同样，对于常用的量词，引擎内置了一些简写</p>
+
+<ol>
+<li><code>?</code>表示<code>{0, 1}</code></li>
+<li><code>+</code>表示<code>{1,}</code></li>
+<li><code>*</code>表示<code>{0,}</code></li>
+</ol>
+
+<h3 id="贪婪与非贪婪">贪婪与非贪婪</h3>
+
+<p>先看一个例子</p>
+
+<pre><code class="language-js">var regex = /\d{1,3}/g;
+var string = &quot;1 12 123 1234&quot;;
+console.log(string.match(regex));
+// -&gt; [&quot;1&quot;, &quot;12&quot;, &quot;123&quot;, &quot;123&quot;, &quot;4&quot;]
+</code></pre>
+
+<p><code>\d{1,3}</code>的意思是数字出现 1 到 3 次，但从结果可以观察到，这个模式会尽量多的匹配数字，即能匹配 3 个就不匹配两个，能匹配两个就不匹配一个。这种行为就是贪婪匹配。那么什么是非贪婪匹配的，在原来的例子上简单修改一下。</p>
+
+<pre><code class="language-js">var regex = /\d{1,3}?/g;
+var string = &quot;1 12 123 1234&quot;;
+console.log(string.match(regex));
+// -&gt; [&quot;1&quot;, &quot;1&quot;, &quot;2&quot;, &quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;]
+</code></pre>
+
+<p>匹配出来的结果都是一个数字，即能匹配一个就不匹配两个。通过上面的例子可以得到两个结论</p>
+
+<ol>
+<li>量词默认是贪婪的</li>
+<li>在模式后面加<code>?</code>可以将贪婪匹配变成非贪婪匹配</li>
+</ol>
+
+<h3 id="选择分支">选择分支</h3>
+
+<p>语法是<code>(p1|p2)</code>，表示模式 p1 或模式 p2。看个例子</p>
+
+<pre><code class="language-js">var regex = /\d{3}|\d{5}/g;
+var string = &quot;12345&quot;;
+console.log(string.match(regex));
+// -&gt; [&quot;123&quot;]
+</code></pre>
+
+<p>从这个例子也可以看出来，选择分支是非贪婪的，即 p1 满足了，就不再去尝试匹配 p2 了。</p>
+
+<h3 id="匹配位置">匹配位置</h3>
+
+<p>除了匹配字符，正则表达式的一个重磅功能就是匹配位置，即开头、结尾和字符之间的位置。一些常用的表示方法如下</p>
+
+<ol>
+<li><code>^</code> 匹配开头，多行模式下匹配行开头</li>
+<li><code>$</code> 匹配结尾，多行模式下匹配行结尾</li>
+<li><code>\b</code> 匹配\w 和\W 的位置，自然就有包括\w 和^以及\w 和\$之间的位置</li>
+<li><code>\B</code> 是<code>\b</code>取反</li>
+<li><code>(?=p)</code> 模式 p 前面的位置 positive lookahead</li>
+<li><code>(?!p)</code> 上面的逻辑取反 negative lookahead</li>
+</ol>
+
+<p><strong>2019-5-30 更新，ES6 中新增了两个位置</strong></p>
+
+<ol>
+<li>(?&lt;=p) 模式 p 后面的位置 positive lookbehind</li>
+<li>(?&lt;!p) 上面的逻辑取反 negative lookbehind</li>
+</ol>
+
+<h3 id="引用分组">引用分组</h3>
+
+<p>被<code>()</code>包裹起来的模式可以在正则表达式中和 JS 相关 API 中被引用，当被正则表达式引用时，使用<code>\数字</code>表示，在被 JS 相关 API 引用时，使用<code>$数字</code>表示，其中的<code>数字</code>范围从 1 到 99。</p>
+
+<p>下面通过几个例子展示一下具体的用法</p>
+
+<pre><code class="language-js">var regex = /\d{4}(-|\/)\d{2}\1\d{2}/;
+var string1 = &quot;2016-07-18&quot;;
+var string2 = &quot;2016/07/18&quot;;
+var string3 = &quot;2016-07/18&quot;;
+regex.test(string1); // -&gt; true
+regex.test(string2); // -&gt; true
+regex.test(string3); // -&gt; false
+
+var regex = /(\d{4})-(\d{2})-(\d{2})/;
+var string = &quot;2016-07-18&quot;;
+var result = string.replace(regex, &quot;$2/$3/$1&quot;);
+console.log(result); // -&gt; 07/18/2016
+</code></pre>
+
+<h3 id="元字符">元字符</h3>
+
+<p>在编写正则表达式时，遇到下面这 20 个字符，要记得转义</p>
+
+<ol>
+<li><code>\ | /</code></li>
+<li><code>() [] {}</code></li>
+<li><code>+ - * =</code></li>
+<li><code>. , : ! ?</code></li>
+<li><code>^ $</code></li>
+</ol>
+
+<h3 id="js-api">JS API</h3>
+
+<p>在 JS 中可以通过如下 API 使用正则表达式完成查找、替换、验证等操作</p>
+
+<ol>
+<li>regex.test(string)</li>
+<li>regex.exec(string)</li>
+<li>string.search(regex)</li>
+<li>string.match(regex)</li>
+<li>string.split(regex)</li>
+<li>string.replace(regex, string/function)</li>
+</ol>
+
+<h3 id="其他有趣的点">其他有趣的点</h3>
+
+<p>如果要匹配任意字符，可以使用逻辑取反操作来完成，比如<code>[\d\D]</code> / <code>[\s\S]</code> / <code>[\w\W]</code> / <code>[^]</code></p>
+
+<p>如果要写一个什么都匹配不了的模式，可以这样：<code>/.^/</code>即任意字符后面有个开头，这当然是不存在的</p>
+]]></content>
+		</item>
 		
 		<item>
 			<title>Javascript中实现继承的几种方式</title>
