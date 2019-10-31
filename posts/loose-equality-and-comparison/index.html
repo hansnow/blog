@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta itemprop="name" content="宽松相等与逻辑比较">
-<meta itemprop="description" content="首先来惊魂拷问一下，你知道下面这些表达式的结果吗？ &quot;&quot; == 0; &quot;0&quot; == false; &quot;&quot; == []; 0 == []; ![] == []; 上面的所有表达式结果都为 true，怎么样，你答对了吗？ 如果你">
+<meta itemprop="description" content="首先来灵魂拷问一下，你知道下面这些表达式的结果吗？ &quot;&quot; == 0; &quot;0&quot; == false; &quot;&quot; == []; 0 == []; ![] == []; 上面的所有表达式结果都为 true，怎么样，你答对了吗？ 如果你">
 
 
 <meta itemprop="datePublished" content="2017-10-03T21:19:56&#43;08:00" />
@@ -17,14 +17,14 @@
 
 <meta itemprop="keywords" content="" />
 <meta property="og:title" content="宽松相等与逻辑比较" />
-<meta property="og:description" content="首先来惊魂拷问一下，你知道下面这些表达式的结果吗？ &quot;&quot; == 0; &quot;0&quot; == false; &quot;&quot; == []; 0 == []; ![] == []; 上面的所有表达式结果都为 true，怎么样，你答对了吗？ 如果你" />
+<meta property="og:description" content="首先来灵魂拷问一下，你知道下面这些表达式的结果吗？ &quot;&quot; == 0; &quot;0&quot; == false; &quot;&quot; == []; 0 == []; ![] == []; 上面的所有表达式结果都为 true，怎么样，你答对了吗？ 如果你" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://yunbo.li/posts/loose-equality-and-comparison/" />
 <meta property="article:published_time" content="2017-10-03T21:19:56+08:00" />
 <meta property="article:modified_time" content="2017-10-03T21:19:56+08:00" />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="宽松相等与逻辑比较"/>
-<meta name="twitter:description" content="首先来惊魂拷问一下，你知道下面这些表达式的结果吗？ &quot;&quot; == 0; &quot;0&quot; == false; &quot;&quot; == []; 0 == []; ![] == []; 上面的所有表达式结果都为 true，怎么样，你答对了吗？ 如果你"/>
+<meta name="twitter:description" content="首先来灵魂拷问一下，你知道下面这些表达式的结果吗？ &quot;&quot; == 0; &quot;0&quot; == false; &quot;&quot; == []; 0 == []; ![] == []; 上面的所有表达式结果都为 true，怎么样，你答对了吗？ 如果你"/>
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -75,7 +75,7 @@
 			<div class="content">
 				
 
-<p>首先来惊魂拷问一下，你知道下面这些表达式的结果吗？</p>
+<p>首先来灵魂拷问一下，你知道下面这些表达式的结果吗？</p>
 
 <pre><code class="language-js">&quot;&quot; == 0;
 &quot;0&quot; == false;
@@ -190,10 +190,13 @@
 <p>所谓逻辑比较就是大于小于这些，逻辑比较中也是存在类型转换的。其转换规则如下</p>
 
 <ol>
-<li>如果双方不都是字符串</li>
+<li>如果双方不都是字符串
+
+<ol>
 <li>对双方进行 ToPrimitive 操作</li>
 <li>如果结果依然存在非字符串， 则对结果再次进行 ToNumber 操作，比较数字大小</li>
 <li>如果结果均为字符串，则按字符串情况比较</li>
+</ol></li>
 <li>双方都是字符串，则按字母顺序比较</li>
 </ol>
 
@@ -220,6 +223,9 @@ a &gt;= b; // -&gt; true
 			</footer>
 		</article>
 		<div class="post-nav thin">
+			<a class="next-post" href="https://yunbo.li/posts/cache-experiment/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;Newer</span><br><span>浏览器缓存机制小实验</span>
+			</a>
 			<a class="prev-post" href="https://yunbo.li/posts/regexp-in-js/">
 				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>学习使用正则表达式</span>
 			</a>
