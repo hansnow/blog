@@ -26,7 +26,7 @@
       <pubDate>Sun, 10 Feb 2019 21:01:24 +0800</pubDate>
       
       <guid>https://yunbo.li/posts/homemade-promise-part2/</guid>
-      <description></description>
+      <description>上篇文章中我们实现了一个具有基础功能的MyPromise，除了内部使用的_resolve和_reject外，我们只实现了Promise.pr</description>
     </item>
     
     <item>
@@ -35,16 +35,16 @@
       <pubDate>Sun, 16 Dec 2018 19:29:01 +0800</pubDate>
       
       <guid>https://yunbo.li/posts/homemade-promise-part1/</guid>
-      <description></description>
+      <description>JavaScript 中的异步问题一直都让人苦恼，直到有了 Promise。Promise 是一种对未来值的封装，是一种许诺，类似于“我承诺将来会给你一个值”。用了</description>
     </item>
     
     <item>
-      <title>浏览器缓存机制小实验</title>
+      <title>浏览器缓存机制</title>
       <link>https://yunbo.li/posts/cache-experiment/</link>
       <pubDate>Sun, 06 May 2018 17:21:30 +0800</pubDate>
       
       <guid>https://yunbo.li/posts/cache-experiment/</guid>
-      <description></description>
+      <description>基本流程 加载资源时，首先根据上次资源响应 Header 中的Expires和Cache-Control判断是否命中强缓存，如果命中则直接从缓存中取，不会发</description>
     </item>
     
     <item>

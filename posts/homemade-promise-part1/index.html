@@ -6,25 +6,25 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta itemprop="name" content="模拟实现Promise(上)">
-<meta itemprop="description" content="">
+<meta itemprop="description" content="JavaScript 中的异步问题一直都让人苦恼，直到有了 Promise。Promise 是一种对未来值的封装，是一种许诺，类似于“我承诺将来会给你一个值”。用了">
 
 
 <meta itemprop="datePublished" content="2018-12-16T19:29:01&#43;08:00" />
 <meta itemprop="dateModified" content="2018-12-16T19:29:01&#43;08:00" />
-<meta itemprop="wordCount" content="0">
+<meta itemprop="wordCount" content="2635">
 
 
 
 <meta itemprop="keywords" content="" />
 <meta property="og:title" content="模拟实现Promise(上)" />
-<meta property="og:description" content="" />
+<meta property="og:description" content="JavaScript 中的异步问题一直都让人苦恼，直到有了 Promise。Promise 是一种对未来值的封装，是一种许诺，类似于“我承诺将来会给你一个值”。用了" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://yunbo.li/posts/homemade-promise-part1/" />
 <meta property="article:published_time" content="2018-12-16T19:29:01+08:00" />
 <meta property="article:modified_time" content="2018-12-16T19:29:01+08:00" />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="模拟实现Promise(上)"/>
-<meta name="twitter:description" content=""/>
+<meta name="twitter:description" content="JavaScript 中的异步问题一直都让人苦恼，直到有了 Promise。Promise 是一种对未来值的封装，是一种许诺，类似于“我承诺将来会给你一个值”。用了"/>
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -74,10 +74,247 @@
 			</header>
 			<div class="content">
 				
+
+<p>JavaScript 中的异步问题一直都让人苦恼，直到有了 Promise。Promise 是一种对未来值的封装，是一种许诺，类似于“我承诺将来会给你一个值”。用了这么久 Promise，对基本 API 的使用已经很熟练了，每次用的时候都感觉 Promise 就像魔法一般神奇。那么 Promise 是如何实现这种魔法的呢？</p>
+
+<p>本篇文章将从头实现一个<code>MyPromise</code>，它和 ES6 Promise 具有一样的 API。同时，为了书写方便，我们将借助 ES6 Class 来完成编码。</p>
+
+<h2 id="构造函数">构造函数<a href="#构造函数" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>首先我们知道 Promise 有三种状态，分别是<code>pending</code>、<code>fulfilled</code>和<code>rejected</code>，并且状态改变只能由<code>pending</code>向其他两种状态单向转移。同时，我们需要维护一个值用来存储 Promise 的决议值或者拒绝原因。Promise 的构造函数接收一个参数，名为<code>executor</code>，它是一个函数，接收 Promise 传给它的<code>resolve</code>和<code>reject</code>两个函数作为参数。Promise 构造出来之后，我们可以调用 Promise 实例的<code>.then</code>方法来注册决议或拒绝的事件监听函数，并且是可以注册多个的。结合上面这些信息，我们可以先搭一个框架出来。</p>
+
+<pre><code class="language-js">// Promise的三种状态
+const PENDING = &quot;PENDING&quot;;
+const FULFILLED = &quot;FULFILLED&quot;;
+const REJECTED = &quot;REJECTED&quot;;
+
+// 工具函数，判断参数是否为函数
+function isFunc(v) {
+  return typeof v === &quot;function&quot;;
+}
+
+class MyPromise {
+  constructor(executor) {
+    // 所处状态
+    this._status = PENDING;
+    // 决议值，可能是完成值，也可能是拒绝原因
+    this._value = undefined;
+    // onFulfilled事件回调队列
+    this._fulfilledQueue = [];
+    // onRejected事件回调队列
+    this._rejectedQueue = [];
+    // 执行executor，如果发生错误
+    // 则将当前Promise设置为拒绝状态
+    try {
+      executor(this._resolve.bind(this), this._reject.bind(this));
+    } catch (err) {
+      this._reject(err);
+    }
+  }
+  this._resolve() {}
+  this._reject() {}
+}
+</code></pre>
+
+<p>首先把三种状态抽象成变量方便以后使用，然后我们声明了一个工具函数<code>isFunc</code>，用来判断参数是否是函数。在构造函数内，除了存储状态的变量和存储决议值或拒绝原因的变量外，还需要声明两个队列，用来存储 Promise 决议或拒绝前，被注册的事件回调。目前<code>this._reject</code>和<code>this._resolve</code>还没有被实现，不要急，接着往下看。</p>
+
+<h2 id="reject">_reject<a href="#reject" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p><code>_reject</code>执行时，Promise 应处于<code>pending</code>状态，否则说明 Promise 已经决议或拒绝。如果状态没问题的话，则设置当前 Promise 的状态为<code>rejected</code>，同时把拒绝原因存储起来，然后从拒绝事件回调队列中取出所有回调一一执行。我们来按照这个思路实现一下。</p>
+
+<pre><code class="language-js">class MyPromise {
+  // ...
+  _reject(reason) {
+    // 保证Promise的状态转换只能发生一次
+    if (this._status !== PENDING) return;
+    const run = () =&gt; {
+      this._value = reason;
+      this._status = REJECTED;
+      // 从相应队列里取出所有回调函数并执行
+      let cb;
+      while ((cb = this._rejectedQueue.shift())) {
+        cb(reason);
+      }
+    };
+    // 为了支持&quot;同步&quot;的Promise
+    // 这里使用setTimeout来异步执行run
+    setTimeout(run, 0);
+  }
+}
+</code></pre>
+
+<p>注意到我们把执行回调函数的过程封装在了<code>setTimeout</code>中，这是为什么呢？直接同步执行这个逻辑可不可以呢？考虑下面的代码</p>
+
+<pre><code class="language-js">var p = new Promise((resolve, reject) =&gt; {
+  reject();
+});
+p.then(null, () =&gt; {
+  console.log(&quot;p is rejected&quot;);
+});
+</code></pre>
+
+<p>Promise 并不止被用于异步过程，它的构造函数完全可以不包含任何异步过程。在上面的代码中，我们构造 Promise 的同时直接将其同步拒绝了，而且此时还没有执行到<code>p.then</code>这里，也就是说还没有注册上拒绝事件回调。因此从事件回调队列中取回调函数并一一执行的过程需要是异步的，这样才能保证像上面这段代码一样的“同步”Promise 能够正常执行。</p>
+
+<h2 id="resolve">_resolve<a href="#resolve" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>与<code>_reject</code>类似，<code>_reject</code>首先要保证状态转义符合要求，同时取出回调事件执行。但比<code>_reject</code>更强大的是，如果传参(也就是决议值)是 Promise 实例的话，<code>_resolve</code>则会跟踪自己的传参，因此决议值会变成传参的决议值而不是传参本身。举个例子</p>
+
+<pre><code class="language-js">var p = new Promise((resolve, reject) =&gt; {
+  resolve(Promise.resolve(42));
+});
+p.then(value =&gt; {
+  console.log(&quot;p is resolved with&quot;, value);
+});
+// -&gt; p is resolved with 42
+</code></pre>
+
+<p>接下来我们来看一下如何实现这个神奇的特性</p>
+
+<pre><code class="language-js">class MyPromise {
+  // ...
+  _resolve(value) {
+    if (this._status !== PENDING) return;
+    const run = () =&gt; {
+      const runFulfilled = value =&gt; {
+        let cb;
+        while ((cb = this._fulfilledQueue.shift())) {
+          cb(value);
+        }
+      };
+      const runRejected = reason =&gt; {
+        let cb;
+        while ((cb = this._rejectedQueue.shift())) {
+          cb(reason);
+        }
+      };
+      if (value instanceof MyPromise) {
+        value.then(
+          v =&gt; {
+            this._value = v;
+            this._status = FULFILLED;
+            runFulfilled(v);
+          },
+          r =&gt; {
+            this._value = r;
+            this._status = REJECTED;
+            runRejected(r);
+          }
+        );
+      } else {
+        this._value = value;
+        this._status = FULFILLED;
+        runFulfilled(value);
+      }
+    };
+    setTimeout(run, 0);
+  }
+}
+</code></pre>
+
+<p>整体结构上和<code>_reject</code>类似，但是<code>_resolve</code>中多了一个用来判断传参类型的逻辑，即传参如果是 Promise 实例，则在传参上注册<code>.then</code>事件，然后根据传参最终被决议还是拒绝来决定当前 Promise 应该被决议还是拒绝。最后，依然是由于“同步”Promise 的问题，需要把整个过程用<code>setTimeout</code>包裹起来，确保逻辑执行时已经被注册了事件回调。</p>
+
+<h2 id="then">then<a href="#then" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>根据规范，<code>then</code>位于 Promise 的实例上，每次调用都会返回一个新的 Promise 实例。它的作用是注册事件回调，决议事件回调一般被称为<code>onFulfilled</code>，拒绝事件回调一般被称为<code>onRejected</code>。<code>then</code>也有一个神奇的特性，如果<code>onFulfilled</code>或者<code>onRejected</code>返回了 Promise 实例，则<code>then</code>返回的新 Promise 实例会跟踪这些返回值 Promise。如下面的例子所示。</p>
+
+<pre><code class="language-js">var p = new Promise((resolve, reject) =&gt; {
+  resolve(Promise.resolve());
+});
+var p1 = p.then(() =&gt; {
+  return Promise.resolve(42);
+});
+p1.then(value =&gt; {
+  console.log(&quot;p1 is resolved with&quot;, value);
+});
+// -&gt; p1 is resolved with 42
+</code></pre>
+
+<p>具体实现如下</p>
+
+<pre><code class="language-js">class MyPromise {
+  // ...
+  then(onFulfilled, onRejected) {
+    return new MyPromise((resolve, reject) =&gt; {
+      function fulfilled(value) {
+        try {
+          if (!isFunc(onFulfilled)) {
+            resolve(value);
+          } else {
+            let ret = onFulfilled(value);
+            if (ret instanceof MyPromise) {
+              ret.then(resolve, reject);
+            } else {
+              resolve(ret);
+            }
+          }
+        } catch (err) {
+          reject(err);
+        }
+      }
+      function rejected(reason) {
+        try {
+          if (!isFunc(onRejected)) {
+            reject(reason);
+          } else {
+            let ret = onRejected(reason);
+            if (ret instanceof MyPromise) {
+              ret.then(resolve, reject);
+            } else {
+              reject(ret);
+            }
+          }
+        } catch (err) {
+          reject(err);
+        }
+      }
+      switch (this._status) {
+        case PENDING:
+          this._fulfilledQueue.push(onFulfilled);
+          this._rejectedQueue.push(onRejected);
+          break;
+        case FULFILLED:
+          fulfilled(this._value);
+          break;
+        case REJECTED:
+          rejected(this._value);
+          break;
+      }
+    });
+  }
+}
+</code></pre>
+
+<p>可以看到总体结构是这样的，首先无脑构造一个 Promise 实例并返回，在该 Promise 实例的构造函数中，首先判断一下当前 Promise 的状态，如果还没被决议或拒绝，则先将事件回调存储在队列中。否则的话，直接调用相应的事件回调函数，判断返回值是否是 Promise 实例，如果是的话则追踪，不是的话新 Promise 将用该返回值决议或拒绝。</p>
+
+<p>其中用到了我们之前声明的<code>isFunc</code>工具函数，因为在 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise/then">MDN</a> 中有这样一段描述</p>
+
+<blockquote>
+<p>注意：如果忽略针对某个状态的回调函数参数，或者提供非函数 (nonfunction) 参数，那么 then 方法将会丢失关于该状态的回调函数信息，但是并不会产生错误。如果调用 then 的 Promise 的状态（fulfillment 或 rejection）发生改变，但是 then 中并没有关于这种状态的回调函数，那么 then 将创建一个没有经过回调函数处理的新 Promise 对象，这个新 Promise 只是简单地接受调用这个 then 的原 Promise 的终态作为它的终态。</p>
+</blockquote>
+
+<p>什么意思呢，我们还是举个例子来说明吧</p>
+
+<pre><code class="language-js">var p = new Promise(resolve =&gt; {
+  resolve(42);
+});
+p.then(null, () =&gt; {
+  console.log(&quot;I will never run&quot;);
+}).then(value =&gt; {
+  console.log(&quot;p.then() is resolved with&quot;, value);
+});
+// -&gt; p.then() is resolved with 42
+</code></pre>
+
+<p>相应回调函数缺失或者不是函数时，效果就像决议值或拒绝原因被“透传”给<code>.then</code>返回的 Promise 的相应回调函数了。</p>
+
+<h2 id="总结">总结<a href="#总结" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>至此，我们就算模拟实现了一个比较完善的基础 Promise。实现过程中，我们可以发现看似神奇的 Promise 背后其实并没有魔法，它本质上还是基于回调实现的。目前我们实现的这个 Promise 只具有一些基本功能，而剩下的一些 API，如<code>Promise.prototype.catch</code>、<code>Promise.prototype.finally</code>、<code>Promise.all</code>等，留到下一篇再详细介绍吧~</p>
+
 			</div>
 			<hr class="post-end">
 			<footer class="post-info">
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>0 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>2635 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2018-12-16 19:29 &#43;0800</p>
 			</footer>
 		</article>
@@ -86,7 +323,7 @@
 				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;Newer</span><br><span>模拟实现Promise(下)</span>
 			</a>
 			<a class="prev-post" href="https://yunbo.li/posts/cache-experiment/">
-				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>浏览器缓存机制小实验</span>
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>浏览器缓存机制</span>
 			</a>
 		</div>
 		<div id="comments" class="thin">

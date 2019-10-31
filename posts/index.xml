@@ -14,8 +14,135 @@
 			<pubDate>Sun, 10 Feb 2019 21:01:24 +0800</pubDate>
 			
 			<guid>https://yunbo.li/posts/homemade-promise-part2/</guid>
-			<description></description>
-			<content type="html"><![CDATA[]]></content>
+			<description>上篇文章中我们实现了一个具有基础功能的MyPromise，除了内部使用的_resolve和_reject外，我们只实现了Promise.pr</description>
+			<content type="html"><![CDATA[
+
+<p>上篇文章中我们实现了一个具有基础功能的<code>MyPromise</code>，除了内部使用的<code>_resolve</code>和<code>_reject</code>外，我们只实现了<code>Promise.prototype.then</code>，那么这篇文章中，我们来实现更多 API。</p>
+
+<h2 id="promise-prototype-catch">Promise.prototype.catch</h2>
+
+<p><code>catch</code>的参数是<code>onRejected</code>，即拒绝事件的回调，它返回一个新的 Promise。如果当前 Promise 是决议状态的话，则决议值会透传给新的 Promise 上注册的决议事件回调。</p>
+
+<pre><code class="language-js">class MyPromise {
+  // ...
+  catch(onRejected) {
+    return this.then(null, onRejected);
+  }
+}
+</code></pre>
+
+<p>它的实现利用了<code>.then</code>只能接收函数类型参数的特性，显式将<code>onFulfilled</code>设置为<code>null</code>。</p>
+
+<h2 id="promise-prototype-finally">Promise.prototype.finally</h2>
+
+<p>这是一个 ES2018 的新特性。<code>finally</code>方法返回一个 Promise，它接收的参数称为<code>onFinally</code>，其特点是，无论当前 Promise 被决议或者是被拒绝，<code>onFinally</code>都会执行。这为在 Promise 是否成功完成后都需要执行的代码提供了一种方式。需要注意的是，只有在<code>onFinally</code>中 throw 或返回被拒绝的 Promise 时，<code>onFinally</code>才会返回被相应原因拒绝的 Promise，否则返回的 Promise 状态与上一个 Promise 保持一致。</p>
+
+<pre><code class="language-js">class MyPromise {
+  // ...
+  finally(cb) {
+    return this.then(
+      value =&gt; MyPromise.resolve(cb()).then(() =&gt; value),
+      reason =&gt;
+        MyPromise.resolve(cb()).then(() =&gt; {
+          throw reason;
+        })
+    );
+  }
+}
+</code></pre>
+
+<h2 id="promise-reject">Promise.reject</h2>
+
+<p>实例上的方法实现完之后，我们来实现 Promise 上的静态方法。<code>Promise.reject</code>返回一个拒绝状态的 Promise</p>
+
+<pre><code class="language-js">class MyPromise {
+  // ...
+  static reject(value) {
+    return new MyPromise((resolve, reject) =&gt; reject(value));
+  }
+}
+</code></pre>
+
+<h2 id="promise-resolve">Promise.resolve</h2>
+
+<p>与<code>Promise.reject</code>类似，<code>Promise.resolve</code>返回一个被决议的 Promise。但是后者多了一些细节，即如果传参是 Promise 实例的话，则直接返回这个实例。因此<code>Promise.resolve</code>常被用来保障某个值是 Promise。</p>
+
+<pre><code class="language-js">class MyPromise {
+  // ...
+  static resolve(value) {
+    if (value instanceof MyPromise) return value;
+    return new MyPromise(resolve =&gt; resolve(value));
+  }
+}
+</code></pre>
+
+<h2 id="promise-all">Promise.all</h2>
+
+<p><code>Promise.all</code>接收一个数组作为参数，参数数组中的成员可以是 Promise，也可以是普通值。它的返回值是一个 Promise，该返回值 Promise 被决议时表示参数数组中所有成员均被决议，此时返回值 Promise 决议值为一个数组，与参数数组的决议值一一对应；该返回值 Promise 被拒绝时，说明参数数组中有成员被拒绝，此时返回值 Promise 的拒绝原因即为那个被拒绝的成员的拒绝原因。</p>
+
+<p><code>Promise.all</code>有一个特殊情况，当传递空数组时，返回决议值为空数组的 Promise。</p>
+
+<pre><code class="language-js">class MyPromise {
+  // ...
+  static all(promises) {
+    if (promises.length === 0) return MyPromise.resolve([]);
+    return new MyPromise((resolve, reject) =&gt; {
+      let resolvedValues = [];
+      let resolvedCount = 0;
+      for (let i = 0; i &lt; promises.length; i++) {
+        MyPromise.resolve(promises[i]).then(
+          value =&gt; {
+            resolvedValues[i] = value;
+            if (++resolvedCount === promises.length) {
+              resolve(resolvedValues);
+            }
+          },
+          reason =&gt; reject(reason)
+        );
+      }
+    });
+  }
+}
+</code></pre>
+
+<h2 id="promise-reject-1">Promise.reject</h2>
+
+<p>传参形式与<code>Promise.all</code>相同，该函数的返回值是一个 Promise，当返回值 Promise 被决议时，说明参数数组中有成员被决议了，返回值的决议值即为该成员的决议值；当返回值 Promise 被拒绝时，说明参数数组中有成员被拒绝了，返回值的拒绝原因即为该成员的拒绝原因。</p>
+
+<p>向<code>Promise.race</code>传递空数组时，返回值 Promise 会一直处于 Pending 状态，永远不会被决议或者拒绝，我们要避免这种情况。</p>
+
+<pre><code class="language-js">class MyPromise {
+  // ...
+  static race(promises) {
+    return new MyPromise((resolve, reject) =&gt; {
+      for (let i = 0; i &lt; promises.length; i++) {
+        MyPromise.resolve(promises[i]).then(
+          value =&gt; resolve(value),
+          reason =&gt; reject(reason)
+        );
+      }
+    });
+  }
+}
+</code></pre>
+
+<h2 id="promise-allsettled">Promise.allSettled</h2>
+
+<p>这同样是一个 ES2018 新增的 API。它的传参与<code>Promise.all</code>一致，但返回值 Promise 一定会被决议，且决议值同样是数组，数组成员的形式要么是<code>{status: 'fulfilled', value: FulfilledValue}</code>，要么是<code>{status: 'rejected', reason: RejectedReason}</code>，具体是哪一种，取决于对应位置上的参数数组成员被决议还是拒绝。</p>
+
+<pre><code class="language-js">static allSettled(promises) {
+    return Promise.all(
+      Array.from(promises, p =&gt; {
+        return Promise.resolve(p).then(
+          value =&gt; ({ status: &quot;fulfilled&quot;, value }),
+          reason =&gt; ({ status: &quot;rejected&quot;, reason })
+        );
+      })
+    );
+  }
+}
+</code></pre>
+]]></content>
 		</item>
 		
 		<item>
@@ -24,18 +151,316 @@
 			<pubDate>Sun, 16 Dec 2018 19:29:01 +0800</pubDate>
 			
 			<guid>https://yunbo.li/posts/homemade-promise-part1/</guid>
-			<description></description>
-			<content type="html"><![CDATA[]]></content>
+			<description>JavaScript 中的异步问题一直都让人苦恼，直到有了 Promise。Promise 是一种对未来值的封装，是一种许诺，类似于“我承诺将来会给你一个值”。用了</description>
+			<content type="html"><![CDATA[
+
+<p>JavaScript 中的异步问题一直都让人苦恼，直到有了 Promise。Promise 是一种对未来值的封装，是一种许诺，类似于“我承诺将来会给你一个值”。用了这么久 Promise，对基本 API 的使用已经很熟练了，每次用的时候都感觉 Promise 就像魔法一般神奇。那么 Promise 是如何实现这种魔法的呢？</p>
+
+<p>本篇文章将从头实现一个<code>MyPromise</code>，它和 ES6 Promise 具有一样的 API。同时，为了书写方便，我们将借助 ES6 Class 来完成编码。</p>
+
+<h2 id="构造函数">构造函数</h2>
+
+<p>首先我们知道 Promise 有三种状态，分别是<code>pending</code>、<code>fulfilled</code>和<code>rejected</code>，并且状态改变只能由<code>pending</code>向其他两种状态单向转移。同时，我们需要维护一个值用来存储 Promise 的决议值或者拒绝原因。Promise 的构造函数接收一个参数，名为<code>executor</code>，它是一个函数，接收 Promise 传给它的<code>resolve</code>和<code>reject</code>两个函数作为参数。Promise 构造出来之后，我们可以调用 Promise 实例的<code>.then</code>方法来注册决议或拒绝的事件监听函数，并且是可以注册多个的。结合上面这些信息，我们可以先搭一个框架出来。</p>
+
+<pre><code class="language-js">// Promise的三种状态
+const PENDING = &quot;PENDING&quot;;
+const FULFILLED = &quot;FULFILLED&quot;;
+const REJECTED = &quot;REJECTED&quot;;
+
+// 工具函数，判断参数是否为函数
+function isFunc(v) {
+  return typeof v === &quot;function&quot;;
+}
+
+class MyPromise {
+  constructor(executor) {
+    // 所处状态
+    this._status = PENDING;
+    // 决议值，可能是完成值，也可能是拒绝原因
+    this._value = undefined;
+    // onFulfilled事件回调队列
+    this._fulfilledQueue = [];
+    // onRejected事件回调队列
+    this._rejectedQueue = [];
+    // 执行executor，如果发生错误
+    // 则将当前Promise设置为拒绝状态
+    try {
+      executor(this._resolve.bind(this), this._reject.bind(this));
+    } catch (err) {
+      this._reject(err);
+    }
+  }
+  this._resolve() {}
+  this._reject() {}
+}
+</code></pre>
+
+<p>首先把三种状态抽象成变量方便以后使用，然后我们声明了一个工具函数<code>isFunc</code>，用来判断参数是否是函数。在构造函数内，除了存储状态的变量和存储决议值或拒绝原因的变量外，还需要声明两个队列，用来存储 Promise 决议或拒绝前，被注册的事件回调。目前<code>this._reject</code>和<code>this._resolve</code>还没有被实现，不要急，接着往下看。</p>
+
+<h2 id="reject">_reject</h2>
+
+<p><code>_reject</code>执行时，Promise 应处于<code>pending</code>状态，否则说明 Promise 已经决议或拒绝。如果状态没问题的话，则设置当前 Promise 的状态为<code>rejected</code>，同时把拒绝原因存储起来，然后从拒绝事件回调队列中取出所有回调一一执行。我们来按照这个思路实现一下。</p>
+
+<pre><code class="language-js">class MyPromise {
+  // ...
+  _reject(reason) {
+    // 保证Promise的状态转换只能发生一次
+    if (this._status !== PENDING) return;
+    const run = () =&gt; {
+      this._value = reason;
+      this._status = REJECTED;
+      // 从相应队列里取出所有回调函数并执行
+      let cb;
+      while ((cb = this._rejectedQueue.shift())) {
+        cb(reason);
+      }
+    };
+    // 为了支持&quot;同步&quot;的Promise
+    // 这里使用setTimeout来异步执行run
+    setTimeout(run, 0);
+  }
+}
+</code></pre>
+
+<p>注意到我们把执行回调函数的过程封装在了<code>setTimeout</code>中，这是为什么呢？直接同步执行这个逻辑可不可以呢？考虑下面的代码</p>
+
+<pre><code class="language-js">var p = new Promise((resolve, reject) =&gt; {
+  reject();
+});
+p.then(null, () =&gt; {
+  console.log(&quot;p is rejected&quot;);
+});
+</code></pre>
+
+<p>Promise 并不止被用于异步过程，它的构造函数完全可以不包含任何异步过程。在上面的代码中，我们构造 Promise 的同时直接将其同步拒绝了，而且此时还没有执行到<code>p.then</code>这里，也就是说还没有注册上拒绝事件回调。因此从事件回调队列中取回调函数并一一执行的过程需要是异步的，这样才能保证像上面这段代码一样的“同步”Promise 能够正常执行。</p>
+
+<h2 id="resolve">_resolve</h2>
+
+<p>与<code>_reject</code>类似，<code>_reject</code>首先要保证状态转义符合要求，同时取出回调事件执行。但比<code>_reject</code>更强大的是，如果传参(也就是决议值)是 Promise 实例的话，<code>_resolve</code>则会跟踪自己的传参，因此决议值会变成传参的决议值而不是传参本身。举个例子</p>
+
+<pre><code class="language-js">var p = new Promise((resolve, reject) =&gt; {
+  resolve(Promise.resolve(42));
+});
+p.then(value =&gt; {
+  console.log(&quot;p is resolved with&quot;, value);
+});
+// -&gt; p is resolved with 42
+</code></pre>
+
+<p>接下来我们来看一下如何实现这个神奇的特性</p>
+
+<pre><code class="language-js">class MyPromise {
+  // ...
+  _resolve(value) {
+    if (this._status !== PENDING) return;
+    const run = () =&gt; {
+      const runFulfilled = value =&gt; {
+        let cb;
+        while ((cb = this._fulfilledQueue.shift())) {
+          cb(value);
+        }
+      };
+      const runRejected = reason =&gt; {
+        let cb;
+        while ((cb = this._rejectedQueue.shift())) {
+          cb(reason);
+        }
+      };
+      if (value instanceof MyPromise) {
+        value.then(
+          v =&gt; {
+            this._value = v;
+            this._status = FULFILLED;
+            runFulfilled(v);
+          },
+          r =&gt; {
+            this._value = r;
+            this._status = REJECTED;
+            runRejected(r);
+          }
+        );
+      } else {
+        this._value = value;
+        this._status = FULFILLED;
+        runFulfilled(value);
+      }
+    };
+    setTimeout(run, 0);
+  }
+}
+</code></pre>
+
+<p>整体结构上和<code>_reject</code>类似，但是<code>_resolve</code>中多了一个用来判断传参类型的逻辑，即传参如果是 Promise 实例，则在传参上注册<code>.then</code>事件，然后根据传参最终被决议还是拒绝来决定当前 Promise 应该被决议还是拒绝。最后，依然是由于“同步”Promise 的问题，需要把整个过程用<code>setTimeout</code>包裹起来，确保逻辑执行时已经被注册了事件回调。</p>
+
+<h2 id="then">then</h2>
+
+<p>根据规范，<code>then</code>位于 Promise 的实例上，每次调用都会返回一个新的 Promise 实例。它的作用是注册事件回调，决议事件回调一般被称为<code>onFulfilled</code>，拒绝事件回调一般被称为<code>onRejected</code>。<code>then</code>也有一个神奇的特性，如果<code>onFulfilled</code>或者<code>onRejected</code>返回了 Promise 实例，则<code>then</code>返回的新 Promise 实例会跟踪这些返回值 Promise。如下面的例子所示。</p>
+
+<pre><code class="language-js">var p = new Promise((resolve, reject) =&gt; {
+  resolve(Promise.resolve());
+});
+var p1 = p.then(() =&gt; {
+  return Promise.resolve(42);
+});
+p1.then(value =&gt; {
+  console.log(&quot;p1 is resolved with&quot;, value);
+});
+// -&gt; p1 is resolved with 42
+</code></pre>
+
+<p>具体实现如下</p>
+
+<pre><code class="language-js">class MyPromise {
+  // ...
+  then(onFulfilled, onRejected) {
+    return new MyPromise((resolve, reject) =&gt; {
+      function fulfilled(value) {
+        try {
+          if (!isFunc(onFulfilled)) {
+            resolve(value);
+          } else {
+            let ret = onFulfilled(value);
+            if (ret instanceof MyPromise) {
+              ret.then(resolve, reject);
+            } else {
+              resolve(ret);
+            }
+          }
+        } catch (err) {
+          reject(err);
+        }
+      }
+      function rejected(reason) {
+        try {
+          if (!isFunc(onRejected)) {
+            reject(reason);
+          } else {
+            let ret = onRejected(reason);
+            if (ret instanceof MyPromise) {
+              ret.then(resolve, reject);
+            } else {
+              reject(ret);
+            }
+          }
+        } catch (err) {
+          reject(err);
+        }
+      }
+      switch (this._status) {
+        case PENDING:
+          this._fulfilledQueue.push(onFulfilled);
+          this._rejectedQueue.push(onRejected);
+          break;
+        case FULFILLED:
+          fulfilled(this._value);
+          break;
+        case REJECTED:
+          rejected(this._value);
+          break;
+      }
+    });
+  }
+}
+</code></pre>
+
+<p>可以看到总体结构是这样的，首先无脑构造一个 Promise 实例并返回，在该 Promise 实例的构造函数中，首先判断一下当前 Promise 的状态，如果还没被决议或拒绝，则先将事件回调存储在队列中。否则的话，直接调用相应的事件回调函数，判断返回值是否是 Promise 实例，如果是的话则追踪，不是的话新 Promise 将用该返回值决议或拒绝。</p>
+
+<p>其中用到了我们之前声明的<code>isFunc</code>工具函数，因为在 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise/then">MDN</a> 中有这样一段描述</p>
+
+<blockquote>
+<p>注意：如果忽略针对某个状态的回调函数参数，或者提供非函数 (nonfunction) 参数，那么 then 方法将会丢失关于该状态的回调函数信息，但是并不会产生错误。如果调用 then 的 Promise 的状态（fulfillment 或 rejection）发生改变，但是 then 中并没有关于这种状态的回调函数，那么 then 将创建一个没有经过回调函数处理的新 Promise 对象，这个新 Promise 只是简单地接受调用这个 then 的原 Promise 的终态作为它的终态。</p>
+</blockquote>
+
+<p>什么意思呢，我们还是举个例子来说明吧</p>
+
+<pre><code class="language-js">var p = new Promise(resolve =&gt; {
+  resolve(42);
+});
+p.then(null, () =&gt; {
+  console.log(&quot;I will never run&quot;);
+}).then(value =&gt; {
+  console.log(&quot;p.then() is resolved with&quot;, value);
+});
+// -&gt; p.then() is resolved with 42
+</code></pre>
+
+<p>相应回调函数缺失或者不是函数时，效果就像决议值或拒绝原因被“透传”给<code>.then</code>返回的 Promise 的相应回调函数了。</p>
+
+<h2 id="总结">总结</h2>
+
+<p>至此，我们就算模拟实现了一个比较完善的基础 Promise。实现过程中，我们可以发现看似神奇的 Promise 背后其实并没有魔法，它本质上还是基于回调实现的。目前我们实现的这个 Promise 只具有一些基本功能，而剩下的一些 API，如<code>Promise.prototype.catch</code>、<code>Promise.prototype.finally</code>、<code>Promise.all</code>等，留到下一篇再详细介绍吧~</p>
+]]></content>
 		</item>
 		
 		<item>
-			<title>浏览器缓存机制小实验</title>
+			<title>浏览器缓存机制</title>
 			<link>https://yunbo.li/posts/cache-experiment/</link>
 			<pubDate>Sun, 06 May 2018 17:21:30 +0800</pubDate>
 			
 			<guid>https://yunbo.li/posts/cache-experiment/</guid>
-			<description></description>
-			<content type="html"><![CDATA[]]></content>
+			<description>基本流程 加载资源时，首先根据上次资源响应 Header 中的Expires和Cache-Control判断是否命中强缓存，如果命中则直接从缓存中取，不会发</description>
+			<content type="html"><![CDATA[
+
+<h3 id="基本流程">基本流程</h3>
+
+<ol>
+<li>加载资源时，首先根据上次资源响应 Header 中的<code>Expires</code>和<code>Cache-Control</code>判断是否命中强缓存，如果命中则直接从缓存中取，不会发送资源请求到服务器</li>
+<li>如果没有命中强缓存，则服务端根据<code>Last-Modified/Last-Modified-Since</code>和<code>ETag/If-None-Match</code>验证是否命中协商缓存，如果命中则返回 304 响应，不会返回资源数据</li>
+<li>如果没有命中协商缓存，则服务端返回资源数据</li>
+</ol>
+
+<h3 id="比较">比较</h3>
+
+<p>相同点：不论是哪种缓存，都是从本地加载资源，服务端不会返回资源数据<br />不同点：强缓存不会产生请求，协商缓存会产生请求</p>
+
+<h3 id="强缓存">强缓存</h3>
+
+<p><code>Expires</code>表示缓存到期时间，是一个绝对时间，形如<code>Thu, 10 Oct 2017 01:47:03 GMT</code>，它存在于资源的响应头中。该字段出现于 HTTP/1.0 规范中。<br /><code>Cache-Control</code>表示缓存到期的<strong>相对时间</strong>，以下是一些常用字段值</p>
+
+<ol>
+<li>max-age=86400，表示 24 小时后失效</li>
+<li>must-revalidate，如果超过了 max-age 设置的时间，必须发送请求验证资源是否还有效</li>
+<li>no-cache，依然缓存资源，但是否使用该资源，由后续的对比决定</li>
+<li>no-store，真正意义上的“不要缓存”</li>
+<li>public，内容可以被客户端和代理缓存（如 CDN）</li>
+<li>private，内容只能被客户端缓存，代理不能缓存，默认值。</li>
+</ol>
+
+<p>这些字段可以被混合使用，字段间关系如下<br /><img src="https://cdn.nlark.com/yuque/0/2019/webp/202126/1570675846312-5f287bdd-f63f-464f-b76b-b8f3760f6f0f.webp" alt="cache.webp" /><br /><strong>Cache-Control 的优先级高于 Expires</strong>，出于兼容性考虑，两个字段常常会被同时设置</p>
+
+<h3 id="协商缓存">协商缓存</h3>
+
+<p>如果没有强缓存相关字段，或者强缓存判定资源失效时，进入协商缓存阶段机制(也就是说，<strong>强缓存优先级高于协商缓存</strong>)。</p>
+
+<h4 id="last-modified-last-modified-since">Last-Modified &amp; Last-Modified-Since</h4>
+
+<p>第一次请求资源时，资源响应头通过<code>Last-Modified</code>字段告知客户端资源的修改时间，客户端会记录下该时间，在下次请求时，会将该时间写入资源请求头的<code>Last-Modified-Since</code>字段。服务端收到该请求后，将<code>Last-Modified-Since</code>中的时间与资源的上次修改时间进行对比，两个值一致时，返回 304 响应，否则正常返回新的资源。</p>
+
+<h4 id="etag-if-none-match">ETag &amp; If-None-Match</h4>
+
+<p>该机制的运行流程和<code>Last-Modified &amp; Last-Modified-Since</code>类似，只不过将资源修改时间改成了资源内容的 hash，该 hash 在资源响应头的 ETag 中体现，在之后的资源请求头的 If-None-Match 中传回，服务器进行对比，如果一致则返回 304，否则正常返回资源。<br /><strong>ETag 的优先级要高于 Last-Modified</strong></p>
+
+<h3 id="memory-cache-vs-disk-cache">Memory Cache vs Disk Cache</h3>
+
+<p>Chrome DevTools 有时会观察到<code>(from memory cache)</code>，有时则是<code>(from disk cache)</code>，可以通过以下操作复现</p>
+
+<ol>
+<li>资源设置为<code>Cache-Control: max-age=86400</code>，首次打开页面时，响应 200，返回资源</li>
+<li>刷新页面，显示 from memory cache</li>
+<li>关闭页面，重新打开，显示 from disk cache</li>
+</ol>
+
+<p>此外，还可以观察到一个现象，from memory cache 时，耗时很短，往往是 0ms；而 from disk cache 时，往往需要消耗几毫秒的时间。说明确实是前者从内存里读，后者从硬盘里读。</p>
+
+<h3 id="no-cache-vs-no-store">no-cache vs no-store</h3>
+
+<p>用下面的场景进行说明。假设在 HTML 中，同步地请求同一个资源两次（按顺序写两遍），之后异步地再请求一次。</p>
+
+<ol>
+<li>当资源被设置为 no-cache 时，该资源只被请求了一次，说明 no-cache 的语义实际上是下次打开页面时，要重新请求资源，但在当前页面上的请求，有缓存的时候还是可以放心用的</li>
+<li>资源被设置为 no-store 时，该资源被请求三次，说明 no-store 无论无何都会发送请求（猜测，和名字体现出来的一样，no-store 根本就没把资源存储下来）</li>
+</ol>
+]]></content>
 		</item>
 		
 		<item>
