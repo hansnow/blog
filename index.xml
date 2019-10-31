@@ -21,6 +21,15 @@
     </item>
     
     <item>
+      <title>宽松相等与逻辑比较</title>
+      <link>https://yunbo.li/posts/loose-equality-and-comparison/</link>
+      <pubDate>Tue, 03 Oct 2017 21:19:56 +0800</pubDate>
+      
+      <guid>https://yunbo.li/posts/loose-equality-and-comparison/</guid>
+      <description>首先来惊魂拷问一下，你知道下面这些表达式的结果吗？ &amp;quot;&amp;quot; == 0; &amp;quot;0&amp;quot; == false; &amp;quot;&amp;quot; == []; 0 == []; ![] == []; 上面的所有表达式结果都为 true，怎么样，你答对了吗？ 如果你</description>
+    </item>
+    
+    <item>
       <title>学习使用正则表达式</title>
       <link>https://yunbo.li/posts/regexp-in-js/</link>
       <pubDate>Mon, 18 Jul 2016 20:40:33 +0800</pubDate>
