@@ -11,7 +11,7 @@
 
 <meta itemprop="datePublished" content="2018-05-06T17:21:30&#43;08:00" />
 <meta itemprop="dateModified" content="2018-05-06T17:21:30&#43;08:00" />
-<meta itemprop="wordCount" content="1346">
+<meta itemprop="wordCount" content="1338">
 
 
 
@@ -79,7 +79,7 @@
 
 <ol>
 <li>加载资源时，首先根据上次资源响应 Header 中的<code>Expires</code>和<code>Cache-Control</code>判断是否命中强缓存，如果命中则直接从缓存中取，不会发送资源请求到服务器</li>
-<li>如果没有命中强缓存，则服务端根据<code>Last-Modified/Last-Modified-Since</code>和<code>ETag/If-None-Match</code>验证是否命中协商缓存，如果命中则返回 304 响应，不会返回资源数据</li>
+<li>如果没有命中强缓存，则服务端根据<code>Last-Modified/If-Modified-Since</code>和<code>ETag/If-None-Match</code>验证是否命中协商缓存，如果命中则返回 304 响应，不会返回资源数据</li>
 <li>如果没有命中协商缓存，则服务端返回资源数据</li>
 </ol>
 
@@ -106,13 +106,13 @@
 
 <p>如果没有强缓存相关字段，或者强缓存判定资源失效时，进入协商缓存阶段机制(也就是说，<strong>强缓存优先级高于协商缓存</strong>)。</p>
 
-<h4 id="last-modified-last-modified-since">Last-Modified &amp; Last-Modified-Since<a href="#last-modified-last-modified-since" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<h4 id="last-modified-if-modified-since">Last-Modified &amp; If-Modified-Since<a href="#last-modified-if-modified-since" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
 
-<p>第一次请求资源时，资源响应头通过<code>Last-Modified</code>字段告知客户端资源的修改时间，客户端会记录下该时间，在下次请求时，会将该时间写入资源请求头的<code>Last-Modified-Since</code>字段。服务端收到该请求后，将<code>Last-Modified-Since</code>中的时间与资源的上次修改时间进行对比，两个值一致时，返回 304 响应，否则正常返回新的资源。</p>
+<p>第一次请求资源时，资源响应头通过<code>Last-Modified</code>字段告知客户端资源的修改时间，客户端会记录下该时间，在下次请求时，会将该时间写入资源请求头的<code>If-Modified-Since</code>字段。服务端收到该请求后，将<code>If-Modified-Since</code>中的时间与资源的上次修改时间进行对比，两个值一致时，返回 304 响应，否则正常返回新的资源。</p>
 
 <h4 id="etag-if-none-match">ETag &amp; If-None-Match<a href="#etag-if-none-match" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
 
-<p>该机制的运行流程和<code>Last-Modified &amp; Last-Modified-Since</code>类似，只不过将资源修改时间改成了资源内容的 hash，该 hash 在资源响应头的 ETag 中体现，在之后的资源请求头的 If-None-Match 中传回，服务器进行对比，如果一致则返回 304，否则正常返回资源。<br /><strong>ETag 的优先级要高于 Last-Modified</strong></p>
+<p>该机制的运行流程和<code>Last-Modified &amp; If-Modified-Since</code>类似，只不过将资源修改时间改成了资源内容的 hash，该 hash 在资源响应头的 ETag 中体现，在之后的资源请求头的 If-None-Match 中传回，服务器进行对比，如果一致则返回 304，否则正常返回资源。<br /><strong>ETag 的优先级要高于 Last-Modified</strong></p>
 
 <h3 id="memory-cache-vs-disk-cache">Memory Cache vs Disk Cache<a href="#memory-cache-vs-disk-cache" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 
@@ -138,7 +138,7 @@
 			</div>
 			<hr class="post-end">
 			<footer class="post-info">
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1346 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1338 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2018-05-06 17:21 &#43;0800</p>
 			</footer>
 		</article>

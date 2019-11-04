@@ -405,7 +405,7 @@ p.then(null, () =&gt; {
 
 <ol>
 <li>加载资源时，首先根据上次资源响应 Header 中的<code>Expires</code>和<code>Cache-Control</code>判断是否命中强缓存，如果命中则直接从缓存中取，不会发送资源请求到服务器</li>
-<li>如果没有命中强缓存，则服务端根据<code>Last-Modified/Last-Modified-Since</code>和<code>ETag/If-None-Match</code>验证是否命中协商缓存，如果命中则返回 304 响应，不会返回资源数据</li>
+<li>如果没有命中强缓存，则服务端根据<code>Last-Modified/If-Modified-Since</code>和<code>ETag/If-None-Match</code>验证是否命中协商缓存，如果命中则返回 304 响应，不会返回资源数据</li>
 <li>如果没有命中协商缓存，则服务端返回资源数据</li>
 </ol>
 
@@ -432,13 +432,13 @@ p.then(null, () =&gt; {
 
 <p>如果没有强缓存相关字段，或者强缓存判定资源失效时，进入协商缓存阶段机制(也就是说，<strong>强缓存优先级高于协商缓存</strong>)。</p>
 
-<h4 id="last-modified-last-modified-since">Last-Modified &amp; Last-Modified-Since</h4>
+<h4 id="last-modified-if-modified-since">Last-Modified &amp; If-Modified-Since</h4>
 
-<p>第一次请求资源时，资源响应头通过<code>Last-Modified</code>字段告知客户端资源的修改时间，客户端会记录下该时间，在下次请求时，会将该时间写入资源请求头的<code>Last-Modified-Since</code>字段。服务端收到该请求后，将<code>Last-Modified-Since</code>中的时间与资源的上次修改时间进行对比，两个值一致时，返回 304 响应，否则正常返回新的资源。</p>
+<p>第一次请求资源时，资源响应头通过<code>Last-Modified</code>字段告知客户端资源的修改时间，客户端会记录下该时间，在下次请求时，会将该时间写入资源请求头的<code>If-Modified-Since</code>字段。服务端收到该请求后，将<code>If-Modified-Since</code>中的时间与资源的上次修改时间进行对比，两个值一致时，返回 304 响应，否则正常返回新的资源。</p>
 
 <h4 id="etag-if-none-match">ETag &amp; If-None-Match</h4>
 
-<p>该机制的运行流程和<code>Last-Modified &amp; Last-Modified-Since</code>类似，只不过将资源修改时间改成了资源内容的 hash，该 hash 在资源响应头的 ETag 中体现，在之后的资源请求头的 If-None-Match 中传回，服务器进行对比，如果一致则返回 304，否则正常返回资源。<br /><strong>ETag 的优先级要高于 Last-Modified</strong></p>
+<p>该机制的运行流程和<code>Last-Modified &amp; If-Modified-Since</code>类似，只不过将资源修改时间改成了资源内容的 hash，该 hash 在资源响应头的 ETag 中体现，在之后的资源请求头的 If-None-Match 中传回，服务器进行对比，如果一致则返回 304，否则正常返回资源。<br /><strong>ETag 的优先级要高于 Last-Modified</strong></p>
 
 <h3 id="memory-cache-vs-disk-cache">Memory Cache vs Disk Cache</h3>
 
